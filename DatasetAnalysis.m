@@ -1,6 +1,6 @@
 
-function [dataset_analisis, signal_freq] = DatasetAnalysis(directory)
-  % call with -> [da, freq] = DatasetAnalysis('datasets/train')
+function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
+  % call with -> [da, freq, max, min] = DatasetAnalysis('datasets/train')
 
   addpath('evaluation');
 
@@ -8,6 +8,8 @@ function [dataset_analisis, signal_freq] = DatasetAnalysis(directory)
   % dataset_description = zeros(,10)
     
   signal_freq = containers.Map;
+  max = zeros(2,1);
+  min = max;
   number_signals = 0;
   
   for i=1:size(files,1)
@@ -25,7 +27,21 @@ function [dataset_analisis, signal_freq] = DatasetAnalysis(directory)
       ann.y = ceil(ann.y);
       ann.w = ceil(ann.w);
       ann.h = ceil(ann.h);
-
+      
+      % Check min and max sizes
+      if max(1)==0 && max(2)==0
+          max(1)=ann.w;
+          max(2)=ann.h;
+          min(1)=ann.w;
+          min(2)=ann.h;
+      elseif max(1)*max(2)<ann.w*ann.h
+          max(1)=ann.w;
+          max(2)=ann.h;
+      elseif min(1)*min(2)>ann.w*ann.h
+          min(1)=ann.w;
+          min(2)=ann.h;
+      end
+          
       % Form factor
       form_factor = ann.w / ann.h;
       % Filling ration
