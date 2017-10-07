@@ -47,7 +47,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
     
     files = ListFiles(directory);
-    
+    tic
     for i=1:size(files,1)
 
         i
@@ -105,7 +105,7 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
     switch space
         case 'normrgb'
             %At first none pixel is candidate
-            pixelCandidates = zeros(size(img,1),size(img,2));
+            pixelCandidates = zeros(size(im,1),size(im,2));
             
             %% Method 1 (Tresholds by colors) %%
             %Find pixel candidates according to different colors
