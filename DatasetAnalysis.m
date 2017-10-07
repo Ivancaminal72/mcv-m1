@@ -14,7 +14,7 @@ function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
   
   for i=1:size(files,1)
     mask = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'));
-    [annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
+    [annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
     
     i
     
