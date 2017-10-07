@@ -57,7 +57,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
      
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
-        
+        %SaveMask(pixelCandidates, directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
         
@@ -119,6 +119,10 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
     end
 end    
     
+function SaveMask(mask, directory, name)
+    uint8(mask);
+    imwrite(mask, strcat(directory, name,'.png'));
+end
 
 function [windowCandidates] = CandidateGenerationWindow_Example(im, pixelCandidates, window_method)
     windowCandidates = [ struct('x',double(12),'y',double(17),'w',double(32),'h',double(32)) ];
