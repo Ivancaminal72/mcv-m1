@@ -48,7 +48,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     
     files = ListFiles(directory);
     
-    for i=1:size(files,1),
+    for i=1:size(files,1)
 
         i
         

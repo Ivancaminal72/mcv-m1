@@ -1,6 +1,6 @@
 
 function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
-  % call with -> [da, freq, max, min] = DatasetAnalysis('datasets/train')
+  % call with -> [da, freq, max, min] = DatasetAnalysis('datasets/original')
 
   addpath('evaluation');
 
@@ -18,8 +18,10 @@ function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
     
     i
     
-    % There can be many signs in one picture, n_signs is the number of signs in this picture
-    % size(annotations, 1) is the number of annotations in one picture
+    % There can be many signs in one picture
+    if size(signs, 2) ~= size(annotations, 1)
+        error("Different size of signs/annotations");
+    end
     for  j=1:size(annotations, 1)
       ann = annotations(j);
       % Apply Ceil function to obtain non zero integer pixel values
@@ -46,19 +48,18 @@ function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
       form_factor = ann.w / ann.h;
       % Filling ration
       filling_ratio = FillingRatio(mask(ann.y:ann.y+ann.h-1,ann.x:ann.x+ann.w-1), ann.w, ann.h);
-        
+      
+      % Count how many signals of specific signal type are
+      number_signals=number_signals+1;
+      if isKey(signal_freq, signs{j})
+          signal_freq(signs{j}) = signal_freq(signs{j})+1;
+      else
+          signal_freq(signs{j}) = 1;
+      end
+      
       % Add structure
-      dataset_analisis(i) = struct('name', files(i).name, 'x', ann.x, 'y', ann.y, 'w', ann.w, 'h', ann.h, 'form_factor', form_factor, 'filling_ratio', filling_ratio);
-    end
-    
-    % Count how many signals of specific signal type are
-    for  k=1:size(signs, 1)
-        number_signals=number_signals+1;
-        if isKey(signal_freq, signs{k})
-            signal_freq(signs{k}) = signal_freq(signs{k})+1;
-        else
-            signal_freq(signs{k}) = 1;
-        end
+      dataset_analisis(i) = struct('name', files(i).name, 'x', ann.x, 'y', ann.y, 'w', ann.w, 'h', ann.h, 'form_factor', form_factor, 'filling_ratio', filling_ratio, 'type', signs{j});
+      
     end
   end
   sf_keys = keys(signal_freq);
