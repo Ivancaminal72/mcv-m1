@@ -58,7 +58,6 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         
-        
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
         
@@ -105,7 +104,14 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
 
     switch space
         case 'normrgb'
-            pixelCandidates = im(:,:,1)>100;
+            %At first none pixel is candidate
+            pixelCandidates = zeros(size(img,1),size(img,2));
+            
+            %% Method 1 (Tresholds by colors) %%
+            %Find pixel candidates according to different colors
+            pixelCandidates = pixelCandidates | (im(:,:,1)>210 & im(:,:,2)<15 & im(:,:,3)<15); %Redish colors
+            pixelCandidates = pixelCandidates | (im(:,:,1)>15 & im(:,:,2)<90 & im(:,:,3)<190); %Blueish colors
+            pixelCandidates = pixelCandidates | (im(:,:,1)>15 & im(:,:,2)<15 & im(:,:,3)<15); %Blackish colors
             
         otherwise
             error('Incorrect color space defined');
