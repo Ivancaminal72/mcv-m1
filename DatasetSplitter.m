@@ -1,13 +1,14 @@
 %% BLOCK 1 - TASK 2
 addpath('evaluation');
-directory='C:\Users\Cris\Documents\GitHub\team8\TASK2'; % training set location
+dir_original='C:\Users\Ivan\Documents\GitHub\team8\datasets\original'; % original set location
+dir_train='C:\Users\Ivan\Documents\GitHub\team8\datasets\train'; % training set location
+dir_validation='C:\Users\Ivan\Documents\GitHub\team8\datasets\validation'; % validation set location
 
-
-files = ListFiles(directory);
+files = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -32,18 +33,18 @@ for t=1:num
     if A{t,1}== 'B'
             count=count +1
             if count <= 10 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
 %% SPLIT SIGNALS TYPE E
-files1 = ListFiles(directory);
+files1 = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files1)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -69,19 +70,19 @@ for t=1:num
     if A{t,1}== 'E'
             count=count +1
             if count <= 27 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
 
 %% SPLIT SIGNALS TYPE C
-files2 = ListFiles(directory);
+files2 = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files2)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -107,18 +108,18 @@ for t=1:num
     if A{t,1}== 'C'
             count=count +1
             if count <= 32 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
 %% SPLIT SIGNALS TYPE D
-files3 = ListFiles(directory);
+files3 = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files3)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -144,19 +145,19 @@ for t=1:num
     if A{t,1}== 'D'
             count=count +1
             if count <= 70 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
 
 %% SPLIT SIGNALS TYPE A
-files4 = ListFiles(directory);
+files4 = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files4)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -182,18 +183,18 @@ for t=1:num
     if A{t,1}== 'A'
             count=count +1
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
 %% SPLIT SIGNALS TYPE F
-files5 = ListFiles(directory);
+files5 = ListFiles(dir_original);
 A={};
 ci=1;
 for i=1:size(files5)
-[annotations signs counter] = LoadAnnotations(strcat(directory, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
+[annotations signs counter] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
     if counter >1
         for j=1:counter
             A(ci,1)=signs(j);
@@ -219,9 +220,9 @@ for t=1:num
     if A{t,1}== 'F'
             count=count +1
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},'C:\Users\Cris\Documents\GitHub\team8\TASK2\validationset');
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
             end
     end
 end
