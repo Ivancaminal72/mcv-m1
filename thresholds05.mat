@@ -1,0 +1,314 @@
+# Created by Octave 4.2.1, Sun Oct 08 17:38:19 2017 CEST <massens@Marcs-MBP>
+# name: thresholds
+# type: struct
+# ndims: 2
+ 1 6
+# length: 7
+# name: name
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+A
+
+
+
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+B
+
+
+
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+C
+
+
+
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+D
+
+
+
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+E
+
+
+
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1
+F
+
+
+
+
+
+# name: r_min
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+95.59282299100347
+
+
+
+# name: <cell-element>
+# type: scalar
+112.7689126762952
+
+
+
+# name: <cell-element>
+# type: scalar
+105.5179816266143
+
+
+
+# name: <cell-element>
+# type: scalar
+51.21129897959937
+
+
+
+# name: <cell-element>
+# type: scalar
+53.10800633133703
+
+
+
+# name: <cell-element>
+# type: scalar
+45.79897865588053
+
+
+
+
+
+# name: r_max
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+70.15948481516772
+
+
+
+# name: <cell-element>
+# type: scalar
+77.46267850623298
+
+
+
+# name: <cell-element>
+# type: scalar
+74.12692138584907
+
+
+
+# name: <cell-element>
+# type: scalar
+45.41232786928914
+
+
+
+# name: <cell-element>
+# type: scalar
+45.37394897256836
+
+
+
+# name: <cell-element>
+# type: scalar
+40.89969095389165
+
+
+
+
+
+# name: g_min
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+70.90321036921952
+
+
+
+# name: <cell-element>
+# type: scalar
+77.84053234987076
+
+
+
+# name: <cell-element>
+# type: scalar
+53.37186634201036
+
+
+
+# name: <cell-element>
+# type: scalar
+63.16951457064808
+
+
+
+# name: <cell-element>
+# type: scalar
+38.15164197646396
+
+
+
+# name: <cell-element>
+# type: scalar
+64.83216338473041
+
+
+
+
+
+# name: g_max
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+62.21743810412969
+
+
+
+# name: <cell-element>
+# type: scalar
+65.9968623767754
+
+
+
+# name: <cell-element>
+# type: scalar
+52.81996651141586
+
+
+
+# name: <cell-element>
+# type: scalar
+50.26360362083749
+
+
+
+# name: <cell-element>
+# type: scalar
+32.23830206995481
+
+
+
+# name: <cell-element>
+# type: scalar
+52.04102256027613
+
+
+
+
+
+# name: b_min
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+68.9683593013732
+
+
+
+# name: <cell-element>
+# type: scalar
+72.34380184523866
+
+
+
+# name: <cell-element>
+# type: scalar
+54.28226680716887
+
+
+
+# name: <cell-element>
+# type: scalar
+83.67771116075512
+
+
+
+# name: <cell-element>
+# type: scalar
+44.87587077547353
+
+
+
+# name: <cell-element>
+# type: scalar
+88.42310344311883
+
+
+
+
+
+# name: b_max
+# type: cell
+# rows: 1
+# columns: 6
+# name: <cell-element>
+# type: scalar
+61.33886487205542
+
+
+
+# name: <cell-element>
+# type: scalar
+63.18417588677056
+
+
+
+# name: <cell-element>
+# type: scalar
+54.92059233519527
+
+
+
+# name: <cell-element>
+# type: scalar
+66.29102373394664
+
+
+
+# name: <cell-element>
+# type: scalar
+40.93358491236158
+
+
+
+# name: <cell-element>
+# type: scalar
+64.80746007502421
+
+
+
+
+
+
+
