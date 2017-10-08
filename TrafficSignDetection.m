@@ -5,7 +5,7 @@
  
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     addpath('evaluation');
-    % call with -> TrafficSignDetection('datasets/train', 'normrgb','','')
+    % call with -> TrafficSignDetection('datasets/train', 'gaussian_thresholds','','')
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -61,11 +61,11 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     
     files = ListFiles(directory);
     tic
-    for i=1:size(files,1)
-    % for i=1:10
+    % for i=1:size(files,1)
+    for i=1:10
 
-        % display(i)
-        % fflush(stdout);
+        display(i)
+        fflush(stdout);
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
@@ -84,10 +84,10 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelFN = pixelFN + localPixelFN;
         pixelTN = pixelTN + localPixelTN;
 
-        display(pixelTP)
-        display(pixelFP)
-        display(pixelFN)
-        display(pixelTN)
+        % display(pixelTP)
+        % display(pixelFP)
+        % display(pixelFN)
+        % display(pixelTN)
         
         % Accumulate object performance of the current image %%%%%%%%%%%%%%%%  (Needed after Week 3)
         % windowAnnotations = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt'));
@@ -124,27 +124,7 @@ end
 % CandidateGeneration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
-
-    im=double(im);
-
-    switch space
-        case 'normrgb'
-            %At first none pixel is candidate
-            pixelCandidates = zeros(size(im,1),size(im,2));
-            
-            %% Method 1 (Tresholds by colors) %%
-            %Find pixel candidates according to different colors
-            pixelCandidates = pixelCandidates | (im(:,:,1)>210 & im(:,:,2)<15 & im(:,:,3)<15); %Redish colors
-            pixelCandidates = pixelCandidates | (im(:,:,1)>15 & im(:,:,2)<90 & im(:,:,3)<190); %Blueish colors
-            pixelCandidates = pixelCandidates | (im(:,:,1)>15 & im(:,:,2)<15 & im(:,:,3)<15); %Blackish colors
-            
-        otherwise
-            error('Incorrect color space defined');
-            return
-    end
-end    
+ 
     
 function SaveMask(mask, directory, name)
     uint8(mask);
