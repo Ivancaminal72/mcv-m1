@@ -20,7 +20,7 @@ function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
     
     % There can be many signs in one picture
     if size(signs, 2) ~= size(annotations, 1)
-        error("Different size of signs/annotations");
+        error('Different size of signs/annotations');
     end
     for  j=1:size(annotations, 1)
       ann = annotations(j);
