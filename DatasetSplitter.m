@@ -1,14 +1,22 @@
-%% BLOCK 1 - TASK 2
-addpath('evaluation');
-dir_original='C:\Users\Ivan\Documents\GitHub\team8\datasets\original'; % original set location
-dir_train='C:\Users\Ivan\Documents\GitHub\team8\datasets\train'; % training set location
-dir_validation='C:\Users\Ivan\Documents\GitHub\team8\datasets\validation'; % validation set location
+function [ TYPE_SIGNALS ] = SplitTrainingSet(directory, directory_trainingset, directory_validationset )
 
-files = ListFiles(dir_original);
+%directory='C:\Users\Cris\Documents\GitHub\team8\train';
+%directory_trainingset='C:\Users\Cris\Documents\GitHub\team8\train\trainingset'; 
+%directory_validationset= 'C:\Users\Cris\Documents\GitHub\team8\train\validationset';
+%directory='C:\Users\Ivan\Documents\GitHub\team8\datasets\original';
+%directory_trainingset='C:\Users\Ivan\Documents\GitHub\team8\datasets\train'; 
+%directory_validationset= 'C:\Users\Ivan\Documents\GitHub\team8\datasets\validation';
+
+addpath('evaluation');
+addpath('train');
+
+%% SPLIT SIGNALS TYPE B
+
+files = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files)
-[annotations,signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -22,29 +30,42 @@ for i=1:size(files)
     end
 end
 num=size(A,1);
+OA=0;OB=0;OC=0;OD=0;OE=0;OF=0;
 Type_B=0; 
 for h=1:num
     if A{h,1}== 'B'
-      Type_B=Type_B+1; 
+      Type_B=Type_B+1;
+      OB=OB+1;
+    elseif A{h,1}== 'C'
+      OC=OC+1;
+    elseif A{h,1}== 'D'
+      OD=OD+1;
+    elseif A{h,1}== 'E'
+      OE=OE+1;
+    elseif A{h,1}== 'F'
+      OF=OF+1;
+    else A{h,1}== 'A'
+      OA=OA+1;
     end
+    
 end
 count=0;
 for t=1:num
     if A{t,1}== 'B'
-            count=count +1;
+            count=count +1
             if count <= 10 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
 %% SPLIT SIGNALS TYPE E
-files1 = ListFiles(dir_original);
+files1 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files1)
-[annotations, signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -68,21 +89,20 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'E'
-            count=count +1;
+            count=count +1
             if count <= 27 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
-
 %% SPLIT SIGNALS TYPE C
-files2 = ListFiles(dir_original);
+files2 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files2)
-[annotations, signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -106,20 +126,20 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'C'
-            count=count +1;
+            count=count +1
             if count <= 32 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
 %% SPLIT SIGNALS TYPE D
-files3 = ListFiles(dir_original);
+files3 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files3)
-[annotations, signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -143,21 +163,20 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'D'
-            count=count +1;
+            count=count +1
             if count <= 70 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
-
 %% SPLIT SIGNALS TYPE A
-files4 = ListFiles(dir_original);
+files4 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files4)
-[annotations,signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -181,20 +200,20 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'A'
-            count=count +1;
+            count=count +1
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
 %% SPLIT SIGNALS TYPE F
-files5 = ListFiles(dir_original);
+files5 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files5)
-[annotations, signs] = LoadAnnotations(strcat(dir_original, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
+[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -218,13 +237,19 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'F'
-            count=count +1;
+            count=count +1
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_train);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(A{t,2},dir_validation);
+            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
             end
     end
 end
 
- 
+TYPE_SIGNALS=[OA,OB,OC,OD,OE,OF];
+
+end
+
+% [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{1,2}),'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+
+
