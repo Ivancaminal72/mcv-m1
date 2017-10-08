@@ -57,7 +57,7 @@ function TrafficSignDetection(directory, results_directory, pixel_method, window
 
         % display(i)
         % fflush(stdout);
-        
+
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
 
@@ -89,14 +89,17 @@ function TrafficSignDetection(directory, results_directory, pixel_method, window
     end
 
     % Plot performance evaluation
-    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelSensitivity] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
+    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
     % [windowPrecision, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
+
+    f1score = F1Score(pixelPrecision, pixelRecall);
     
-    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelSensitivity]
+    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall]
     display(pixelPrecision)
     display(pixelAccuracy)
     display(pixelSpecificity)
-    display(pixelSensitivity)
+    display(pixelRecall)
+    display(f1score)
     % [windowPrecision, windowAccuracy]
     
     %profile report
@@ -183,3 +186,7 @@ function PerformanceEvaluationROC(scores, labels, thresholdRange)
     plot(roc);
 end
 
+
+function [f1score] = F1Score(precision, recall)
+    f1score = 2 * ((precision * recall) / (precision + recall));
+end
