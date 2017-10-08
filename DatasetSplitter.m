@@ -1,14 +1,30 @@
-function [ TYPE_SIGNALS ] = SplitTrainingSet(directory, directory_trainingset, directory_validationset )
+function [ TYPE_SIGNALS ] = DatasetSplitter(directory, directory_trainingset, directory_validationset )
 
 %directory='C:\Users\Cris\Documents\GitHub\team8\train';
 %directory_trainingset='C:\Users\Cris\Documents\GitHub\team8\train\trainingset'; 
 %directory_validationset= 'C:\Users\Cris\Documents\GitHub\team8\train\validationset';
-%directory='C:\Users\Ivan\Documents\GitHub\team8\datasets\original';
-%directory_trainingset='C:\Users\Ivan\Documents\GitHub\team8\datasets\train'; 
-%directory_validationset= 'C:\Users\Ivan\Documents\GitHub\team8\datasets\validation';
+directory='C:\Users\Ivan\Documents\GitHub\team8\datasets\original';
+directory_trainingset='C:\Users\Ivan\Documents\GitHub\team8\datasets\trainingset'; 
+directory_validationset= 'C:\Users\Ivan\Documents\GitHub\team8\datasets\validationset';
 
 addpath('evaluation');
-addpath('train');
+
+directory_trainingset_mask=strcat(directory_trainingset,'/mask');
+directory_validationset_mask=strcat(directory_validationset,'/mask');
+if (7==exist(directory_trainingset,'dir'))
+    rmdir(directory_trainingset, 's');
+end
+if (7==exist(directory_validationset,'dir'))
+    rmdir(directory_validationset, 's');
+end
+status = mkdir(directory_trainingset_mask);
+if~status
+    error('directory_trainingset_mask creation');
+end
+status = mkdir(directory_validationset_mask);
+if~status
+    error('directory_validationset_mask creation');
+end
 
 %% SPLIT SIGNALS TYPE B
 
@@ -16,7 +32,7 @@ files = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -52,11 +68,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'B'
-            count=count +1
+            count=count +1;
             if count <= 10 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -65,7 +83,7 @@ files1 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files1)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files1(i).name(1:size(files1(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -89,11 +107,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'E'
-            count=count +1
-            if count <= 27 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            count=count +1;
+            if count <= 27
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -102,7 +122,7 @@ files2 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files2)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files2(i).name(1:size(files2(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -126,11 +146,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'C'
-            count=count +1
+            count=count +1;
             if count <= 32 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -139,7 +161,7 @@ files3 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files3)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files3(i).name(1:size(files3(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -163,11 +185,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'D'
-            count=count +1
+            count=count +1;
             if count <= 70 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -176,7 +200,7 @@ files4 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files4)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files4(i).name(1:size(files4(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -200,11 +224,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'A'
-            count=count +1
+            count=count +1;
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -213,7 +239,7 @@ files5 = ListFiles(directory);
 A={};
 ci=1;
 for i=1:size(files5)
-[annotations signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
+[annotations, signs] = LoadAnnotations(strcat(directory, '/gt/gt.', files5(i).name(1:size(files5(i).name,2)-3), 'txt')); 
     if size(annotations, 1) >1
         for j=1:size(annotations, 1)
             A(ci,1)=signs(j);
@@ -237,11 +263,13 @@ end
 count=0;
 for t=1:num
     if A{t,1}== 'F'
-            count=count +1
+            count=count +1;
             if count <= 50 
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_trainingset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_trainingset_mask);
             else
-            [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\',A{t,2}),directory_validationset);
+            copyfile(strcat(directory,'\mask\mask.',A{t,2}(1:size(A{t,2},2)-3),'png'),directory_validationset_mask);
             end
     end
 end
@@ -250,6 +278,6 @@ TYPE_SIGNALS=[OA,OB,OC,OD,OE,OF];
 
 end
 
-% [SUCCESS,MESSAGE,MESSAGEID] = movefile(strcat(directory,'\',A{1,2}),'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
+% [SUCCESS,MESSAGE,MESSAGEID] = copyfile(strcat(directory,'\',A{1,2}),'C:\Users\Cris\Documents\GitHub\team8\TASK2\trainingset');
 
 

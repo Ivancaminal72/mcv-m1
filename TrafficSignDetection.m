@@ -5,11 +5,8 @@
  
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     addpath('evaluation');
-<<<<<<< HEAD
-    % call with -> TrafficSignDetection('datasets/train', 'datasets/results/', 'gaussian_thresholds','','')
-=======
+    
     % call with -> TrafficSignDetection('datasets/train', 'gaussian_thresholds','','')
->>>>>>> 345b7bc3c0d39c277848e99a51e84e6ae46996d2
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -59,6 +56,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     if~status
         error('results_directory creation');
     end
+    
 
     % windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
