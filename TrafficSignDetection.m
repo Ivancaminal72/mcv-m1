@@ -1,8 +1,12 @@
 %
 % Template example for using on the validation set.
 % 
+
  
-function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
+function TrafficSignDetection(directory, results_directory, pixel_method, window_method, decision_method)
+    addpath('evaluation');
+    % call with -> TrafficSignDetection('datasets/train', 'datasets/results', 'normrgb','','')
+
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
     % using a color segmentation. Then, using the color segmentation as a basis, the most likely window 
@@ -49,15 +53,17 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     files = ListFiles(directory);
     tic
     for i=1:size(files,1)
+    % for i=1:10
 
-        i
+        % display(i)
+        % fflush(stdout);
         
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
-     
+
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
-        %SaveMask(pixelCandidates, directory, files(i).name(1:size(files(i).name,2)-3));
+        SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
         
@@ -68,6 +74,11 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelFP = pixelFP + localPixelFP;
         pixelFN = pixelFN + localPixelFN;
         pixelTN = pixelTN + localPixelTN;
+
+        display(pixelTP)
+        display(pixelFP)
+        display(pixelFN)
+        display(pixelTN)
         
         % Accumulate object performance of the current image %%%%%%%%%%%%%%%%  (Needed after Week 3)
         % windowAnnotations = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt'));
@@ -82,6 +93,10 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     % [windowPrecision, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
     
     [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelSensitivity]
+    display(pixelPrecision)
+    display(pixelAccuracy)
+    display(pixelSpecificity)
+    display(pixelSensitivity)
     % [windowPrecision, windowAccuracy]
     
     %profile report
