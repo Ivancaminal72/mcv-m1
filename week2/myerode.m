@@ -1,4 +1,4 @@
-function output = mydilate(input, se)
+function output = myerode(input, se)
     %Binarize the structural element
     for i=size(se,1)
         for j=size(se,2)
@@ -26,15 +26,8 @@ function output = mydilate(input, se)
     else
         n_se = zeros(maxSize);
     end
-    %Rotate the structural element 180º
-    nr_se = n_se;
-    n_se = n_se | se;
-    for i=1:size(n_se,1)
-        for j=1:size(n_se,2)
-            nr_se(i,j) = n_se(maxSize-i+1, maxSize-j+1);
-        end
-    end
-    nr_se = uint8(nr_se);
+    
+    n_se = uint8(n_se);
     padding = ((maxSize+1)/2)-1;
     output = uint8(zeros(size(input)));
     %Add padding to the imput
@@ -44,7 +37,7 @@ function output = mydilate(input, se)
     %Compute the output result
     for i=1:size(output,1)
         for j=1:size(output,2)
-            output(i,j)=max(max(input(i:i+maxSize-1, j:j+maxSize-1) .* nr_se));
+            output(i,j)=min(min(input(i:i+maxSize-1, j:j+maxSize-1) .* n_se));
         end
     end    
 end
