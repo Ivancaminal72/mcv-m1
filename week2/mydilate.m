@@ -1,8 +1,8 @@
 function output = mydilate(input, se)
-    %Binarize the structural element
-    for i=size(se,1)
-        for j=size(se,2)
-            if se(i,j)~=0 || se(i,j)~=1
+    %Binarize the structuring element
+    for i=1:size(se,1)
+        for j=1:size(se,2)
+            if se(i,j)~=0 && se(i,j)~=1
                 se(i,j)=1;
             end
         end
@@ -10,7 +10,7 @@ function output = mydilate(input, se)
     
     maxSize = max(size(se));
     minSize = min(size(se));
-    %Normalize the structural element to have NxN dimensions
+    %Normalize the structuring element to have NxN dimensions
     if maxSize ~= minSize
         if maxSize == size(se,1)
             se = [se, zeros(maxSize, maxSize-minSize)];
@@ -18,7 +18,7 @@ function output = mydilate(input, se)
             se = [se; zeros(maxSize-minSize, maxSize)];
         end
     end
-    %Redefine the structural element to have a center
+    %Redefine the structuring element to have a center
     if rem(maxSize,2)==0 
         n_se = zeros(maxSize+1);
         se = [se,zeros(maxSize,1); zeros(1,maxSize+1)];
@@ -26,7 +26,7 @@ function output = mydilate(input, se)
     else
         n_se = zeros(maxSize);
     end
-    %Rotate the structural element 180º
+    %Rotate the structuring element 180º
     nr_se = n_se;
     n_se = n_se | se;
     for i=1:size(n_se,1)
