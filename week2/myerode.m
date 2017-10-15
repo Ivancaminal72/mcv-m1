@@ -1,8 +1,8 @@
 function output = myerode(input, se)
-    %Binarize the structural element
-    for i=size(se,1)
-        for j=size(se,2)
-            if se(i,j)~=0 || se(i,j)~=1
+    %Binarize the structuring element
+    for i=1:size(se,1)
+        for j=1:size(se,2)
+            if se(i,j)~=0 && se(i,j)~=1
                 se(i,j)=1;
             end
         end
@@ -10,7 +10,7 @@ function output = myerode(input, se)
     
     maxSize = max(size(se));
     minSize = min(size(se));
-    %Normalize the structural element to have NxN dimensions
+    %Normalize the structuring element to have NxN dimensions
     if maxSize ~= minSize
         if maxSize == size(se,1)
             se = [se, zeros(maxSize, maxSize-minSize)];
@@ -18,7 +18,7 @@ function output = myerode(input, se)
             se = [se; zeros(maxSize-minSize, maxSize)];
         end
     end
-    %Redefine the structural element to have a center
+    %Redefine the structuring element to have a center
     if rem(maxSize,2)==0 
         n_se = zeros(maxSize+1);
         se = [se,zeros(maxSize,1); zeros(1,maxSize+1)];
@@ -27,13 +27,13 @@ function output = myerode(input, se)
         n_se = zeros(maxSize);
     end
     
-    n_se = uint8(n_se);
+    n_se = uint8(n_se | se);
     padding = ((maxSize+1)/2)-1;
     output = uint8(zeros(size(input)));
     %Add padding to the imput
-    input = [zeros(padding,size(input,2)+padding*2); 
-        [zeros(size(input,1),padding), input, zeros(size(input,1),padding)]; 
-        zeros(padding,size(input,2)+padding*2)];
+    input = [255*ones(padding,size(input,2)+padding*2); 
+        [255*ones(size(input,1),padding), input, 255*ones(size(input,1),padding)]; 
+        255*ones(padding,size(input,2)+padding*2)];
     %Compute the output result
     for i=1:size(output,1)
         for j=1:size(output,2)
