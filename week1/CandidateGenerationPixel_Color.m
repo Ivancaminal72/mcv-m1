@@ -9,6 +9,8 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
             [pixelCandidates] = GaussianFitWithThresholds(im);
         case 'hsv_ycbcr'
             [pixelCandidates] = HSVStrategy(im);
+        case 'hist_packprop'
+            [pixelCandidates] = HistogramBackprop(im);
         otherwise
             error('Incorrect color space defined');
             return
@@ -62,4 +64,45 @@ function [pixelCandidates] = HSVStrategy(im)
     mask_blue = mask_hsv_blue .* mask_ycbcr_blue;
 
     pixelCandidates = mask_red | mask_blue;
+end
+
+function [pixelCandidates] = HistogramBackprop(im)
+    pixelCandidates = zeros(size(im,1),size(im,2));
+
+    im_ycbcr = rgb2ycbcr(im);
+
+    load('../week2/normalized_histograms/h_y_1.mat')
+    load('../week2/normalized_histograms/h_y_2.mat')
+    load('../week2/normalized_histograms/h_y_3.mat')
+    load('../week2/normalized_histograms/h_cbcr_1.mat')
+    load('../week2/normalized_histograms/h_cbcr_2.mat')
+    load('../week2/normalized_histograms/h_cbcr_3.mat')
+    addpath('../week2')
+
+
+    for i=1:size(im_ycbcr,1)
+        for j=1:size(im_ycbcr,2)
+            pixel = im_ycbcr(i,j,:);
+            pixel = pixel(:);
+
+            pixelValue = 0;
+
+            % Probabilites for the Y channels
+            p_y_1 = HistogramBackpropagation(h_y_1, pixel(1));
+            p_y_2 = HistogramBackpropagation(h_y_2, pixel(1));
+            p_y_3 = HistogramBackpropagation(h_y_3, pixel(1));
+
+            % Probabilities for the CbCr channels
+            p_cbcr_1 = HistogramBackpropagation(h_cbcr_1, [pixel(2); pixel(3)]);
+            p_cbcr_2 = HistogramBackpropagation(h_cbcr_2, [pixel(2); pixel(3)]);
+            p_cbcr_3 = HistogramBackpropagation(h_cbcr_3, [pixel(2); pixel(3)]);
+
+            % Return 1 if it complies with certain thresholds
+            pixelValue = pixelValue | (p_y_1 > 0.005 & p_cbcr_1 > 0.6e-3);
+            pixelValue = pixelValue | (p_y_2 > 0.01 & p_cbcr_2 > 0.6e-3);
+            pixelValue = pixelValue | (p_y_3 > 0.015 & p_cbcr_3 > 0.6e-3);
+
+            pixelCandidates(i,j) = pixelValue;
+        end
+    end
 end
