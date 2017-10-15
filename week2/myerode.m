@@ -31,9 +31,9 @@ function output = myerode(input, se)
     padding = ((maxSize+1)/2)-1;
     output = uint8(zeros(size(input)));
     %Add padding to the imput
-    input = [zeros(padding,size(input,2)+padding*2); 
-        [zeros(size(input,1),padding), input, zeros(size(input,1),padding)]; 
-        zeros(padding,size(input,2)+padding*2)];
+    input = [255*ones(padding,size(input,2)+padding*2); 
+        [255*ones(size(input,1),padding), input, 255*ones(size(input,1),padding)]; 
+        255*ones(padding,size(input,2)+padding*2)];
     %Compute the output result
     for i=1:size(output,1)
         for j=1:size(output,2)
