@@ -1,4 +1,3 @@
 function output = mytophatduale(input, se)
-    temp = myclosing(input,se);
-    output = temp-input;
+    output = myclosing(input,se)-input;
 end

@@ -1,4 +1,4 @@
 function output = myopening(input, se)
-    temp = mydilate(input,se);
-    output = myerode(temp,se);
+    temp = myerode(input,se);
+    output = mydilate(temp,se);
 end
