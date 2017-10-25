@@ -71,13 +71,13 @@ function [pixelCandidates] = HistogramBackprop(im)
 
     im_ycbcr = rgb2ycbcr(im);
 
-    load('../week2/normalized_histograms/h_y_1.mat')
-    load('../week2/normalized_histograms/h_y_2.mat')
-    load('../week2/normalized_histograms/h_y_3.mat')
-    load('../week2/normalized_histograms/h_cbcr_1.mat')
-    load('../week2/normalized_histograms/h_cbcr_2.mat')
-    load('../week2/normalized_histograms/h_cbcr_3.mat')
-    addpath('../week2')
+    load('week2/normalized_histograms/h_y_1.mat')
+    load('week2/normalized_histograms/h_y_2.mat')
+    load('week2/normalized_histograms/h_y_3.mat')
+    load('week2/normalized_histograms/h_cbcr_1.mat')
+    load('week2/normalized_histograms/h_cbcr_2.mat')
+    load('week2/normalized_histograms/h_cbcr_3.mat')
+    addpath('week2')
 
 
     for i=1:size(im_ycbcr,1)

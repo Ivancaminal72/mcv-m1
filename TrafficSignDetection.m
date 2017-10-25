@@ -66,7 +66,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     % for i=1:size(files,1)
     for i=1:10
 
-        display(i)
+        disp(i)
         fflush(stdout);
 
         % Read file

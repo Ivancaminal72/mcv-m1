@@ -8,6 +8,3 @@ Task1:
 Task2:
 - Call "DatasetSplitter" function of DatasetSplitter.m file
 
-Task3 and task4:
-- Call "TrafficSingDetection" function of TrafficSingDetection.m file
-

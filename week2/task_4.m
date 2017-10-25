@@ -1,5 +1,6 @@
 addpath('../week1');
-addpath('../week1/evaluation');
+addpath('..');
+addpath('../evaluation');
 
 % Take files from training split
 directory = '../datasets/train';

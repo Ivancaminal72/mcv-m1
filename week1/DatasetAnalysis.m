@@ -2,8 +2,6 @@
 function [dataset_analisis, signal_freq, max, min] = DatasetAnalysis(directory)
   % call with -> [da, freq, max, min] = DatasetAnalysis('datasets/original')
 
-  addpath('evaluation');
-
   files = ListFiles(directory);
   % dataset_description = zeros(,10)
     
