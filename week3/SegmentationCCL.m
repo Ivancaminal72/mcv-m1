@@ -1,4 +1,4 @@
-function [BB_box] = SegmentationCCL(mask, da)
+function [BB_box] = SegmentationCCL(mask, da, im)
 
 %Detect connected components
 [L, NUM] = bwlabeln(mask);
@@ -8,6 +8,7 @@ coor=blobMeasurements(:).BoundingBox;
 BB_Area=[];
 fr=[];
 ff=[];
+
 % calculate the for the obtained bounging boxes: filling ratio, area and form factor
 for i=1:NUM
     coor(i,:)=blobMeasurements(i).BoundingBox;
@@ -16,8 +17,7 @@ for i=1:NUM
     ff(i)=coor(i,3)/coor(i,4);
 end
 
-figure()
-imshow(I)
+% Area bounig box 
 c=0;
 for i=1:NUM
     if (blobMeasurements(i).Area > da('all').min_area) && (blobMeasurements(i).Area < da('all').max_area)
@@ -27,6 +27,8 @@ for i=1:NUM
         ff1(c)=ff(i);
     end
 end
+
+% Filling Ratio
 m=0;
 for j=1:c
     if (fr1(j)>da('all').fr_min) && (fr1(j) < da('all').fr_max)
@@ -37,12 +39,17 @@ for j=1:c
     end
     %rectangle('Position',[B_box(j,1),B_box(j,2),B_box(j,3),B_box(j,4)],'EdgeColor','r','LineWidth',2 );
 end
+
+% Form factor
 n=0;
 for t=1:m
     if (ff2(t)>da('all').ff_min) && (ff2(t)<ff_max)
         n=n+1;
         BB_box(n,:)=B_box(t,:);
-        %rectangle('Position',[BB_box(n,1),BB_box(n,2),BB_box(n,3),BB_box(n,4)],'EdgeColor','r','LineWidth',2 );
+        figure()
+        imshow(mask)
+        rectangle('Position',[BB_box(n,1),BB_box(n,2),BB_box(n,3),BB_box(n,4)],'EdgeColor','r','LineWidth',2 );
+        waitforbuttonpress
     end
 end
 end
