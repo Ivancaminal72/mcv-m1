@@ -11,11 +11,5 @@ function [windowCandidates] = CandidateGenerationWindow(mask, method, da, im)
     end
 end
 
-function [wc] = SegmentationCCL(mask, da, im)
-    %Cristina stuff...
-    
-end
 
-function [wc] = SlidingWindow(mask, da, im)
-    da['all']
-end
+

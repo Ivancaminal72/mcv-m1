@@ -6,7 +6,7 @@
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     addpath(genpath('.'));
     
-    % call with -> TrafficSignDetection('datasets/trainingset', 'gaussian_thresholds','sliding_window','')
+    % call with -> TrafficSignDetection('datasets/trainingset', 'hsv_ycbcr+morph_op','sliding_window','')
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
