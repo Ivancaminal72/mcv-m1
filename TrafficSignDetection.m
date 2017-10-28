@@ -63,11 +63,11 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     
     files = ListFiles(directory);
     tic
+    
     % for i=1:size(files,1)
-    for i=1:10
+    for i=1:30
 
         disp(i)
-        fflush(stdout);
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));

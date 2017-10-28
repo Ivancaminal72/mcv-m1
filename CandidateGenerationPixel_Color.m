@@ -11,6 +11,8 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
             [pixelCandidates] = HSVStrategy(im);
         case 'hsv_ycbcr+morph_op'
             [pixelCandidates] = MorphOpStrategy(im);
+        case 'hsv_ycbcr+morph_op+hole_filling'
+            [pixelCandidates] = HoleFillingStrategy(im);
         case 'hist_packprop'
             [pixelCandidates] = HistogramBackprop(im);
         otherwise
@@ -20,10 +22,20 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
 end   
 
 
+function [pixelCandidates] = HoleFillingStrategy(im)
+    pixelCandidates = HSVStrategy(im);
+    se = ones(17);
+    pixelCandidates = imclose(imopen(pixelCandidates, se), se);
+    pixelCandidates = imfill(pixelCandidates, 'holes');
+    % pixelPrecision = 0.3646 pixelAccuracy = 0.9959 pixelSpecificity = 0.9978 pixelRecall = 0.3984 f1score = 0.3808
+end
+
 function [pixelCandidates] = MorphOpStrategy(im)
     pixelCandidates = HSVStrategy(im);
     se = ones(17);
     pixelCandidates = imclose(imopen(pixelCandidates, se), se);
+
+    %  pixelPrecision = 0.3574;  pixelAccuracy = 0.9959;  pixelSpecificity = 0.9978;  pixelRecall = 0.3862;  f1score = 0.3713; 
 end
 
 
