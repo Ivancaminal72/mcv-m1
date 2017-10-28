@@ -4,9 +4,9 @@
 
  
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
-    addpath('evaluation');
+    addpath(genpath('.'));
     
-    % call with -> TrafficSignDetection('datasets/train', 'gaussian_thresholds','','')
+    % call with -> TrafficSignDetection('datasets/trainingset', 'gaussian_thresholds','sliding_window','')
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -61,22 +61,23 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     % windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
     
+    datasetAnalysis = DatasetAnalysis('datasets/original');
+    
     files = ListFiles(directory);
     tic
     % for i=1:size(files,1)
     for i=1:10
 
         disp(i)
-        fflush(stdout);
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
 
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
-        SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
+        %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); %%  (Needed after Week 3)
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;

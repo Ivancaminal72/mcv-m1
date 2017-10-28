@@ -13,7 +13,6 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
             [pixelCandidates] = HistogramBackprop(im);
         otherwise
             error('Incorrect color space defined');
-            return
     end
 end   
 
