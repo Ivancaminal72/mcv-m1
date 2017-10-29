@@ -1,4 +1,4 @@
-function [BB_box] = SegmentationCCL(mask, da)
+function [BB_box] = SegmentationCCL(mask, da, im)
 
 %Detect connected components
 [L, NUM] = bwlabeln(mask);
@@ -19,7 +19,7 @@ for i=1:NUM
     ff(i)=coor(i,3)/coor(i,4);
 end
 
-
+% Area bounig box 
 c=0;
 for i=1:NUM
     if (blobMeasurements(i).Area > da('all').min_area) && (blobMeasurements(i).Area < da('all').max_area)
@@ -29,6 +29,8 @@ for i=1:NUM
         ff1(c)=ff(i);
     end
 end
+
+% Filling Ratio
 m=0;
 for j=1:c
     if (fr1(j)>da('all').fr_min) && (fr1(j) < da('all').fr_max)
@@ -39,6 +41,8 @@ for j=1:c
     end
     %rectangle('Position',[B_box(j,1),B_box(j,2),B_box(j,3),B_box(j,4)],'EdgeColor','r','LineWidth',2 );
 end
+
+% Form factor
 n=0;
 figure(1);
 imshow(double(mask))

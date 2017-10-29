@@ -6,7 +6,7 @@
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     addpath(genpath('.'));
     
-    % call with -> TrafficSignDetection('datasets/trainingset', 'hsv_ycbcr+morph_op','sliding_window','')
+    % call with -> TrafficSignDetection('datasets/validationset', 'hsv_ycbcr+morph_op','','')
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -65,10 +65,10 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     
     files = ListFiles(directory);
     
-    % for i=1:size(files,1)
-    for i=1:30
+    for i=1:size(files,1)
+    % for i=1:2
 
-        disp(sprintf("image%d",i));
+        disp(sprintf('image%d',i));
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
@@ -77,7 +77,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
+        % windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
@@ -106,14 +106,16 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
 
     f1score = F1Score(pixelPrecision, pixelRecall);
     
-    disp(pixelPrecision)
-    disp(pixelAccuracy)
-    disp(pixelSpecificity)
-    disp(pixelRecall)
-    display(f1score)
+    disp(strcat('Precision :', num2str(pixelPrecision)));
+    disp(strcat('Accuracy  :', num2str(pixelAccuracy)));
+    disp(strcat('Recall    :', num2str(pixelRecall)));
+    disp(strcat('F1 Score  :', num2str(f1score)));
+    disp(strcat('TP        :', num2str(pixelTP)));
+    disp(strcat('FP        :', num2str(pixelFP)));
+    disp(strcat('FN        :', num2str(pixelFN)));
     % [windowPrecision, windowAccuracy]
     
-    %profile report
+    % profile report
     %profile off
 end
  
