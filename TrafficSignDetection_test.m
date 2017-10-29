@@ -3,6 +3,8 @@
 % 
  
 function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, window_method, decision_method)
+    % TrafficSignDetection_validation('datasets/test', 'results', 'hsv-morph_op2', window_method, '')
+
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
     % using a color segmentation. Then, using the color segmentation as a basis, the most likely window 
@@ -45,6 +47,7 @@ function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, wi
     %end
 
     files = ListFiles(input_dir);
+    datasetAnalysis = DatasetAnalysis('datasets/train');
     
     for ii=1:size(files,1),
 
@@ -58,10 +61,10 @@ function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, wi
         
         
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); 
 
         out_file1 = sprintf ('%s/test/pixelCandidates_%06d.png',  output_dir, ii);
-	    %out_file2 = sprintf ('%s/test/windowCandidates_%06d.mat', output_dir, ii);
+	    out_file2 = sprintf ('%s/test/windowCandidates_%06d.mat', output_dir, ii);
 
 	    imwrite (pixelCandidates, out_file1);
 	    %save (out_file2, 'windowCandidates');        

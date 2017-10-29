@@ -6,7 +6,7 @@
 function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
     addpath(genpath('.'));
     
-    % call with -> TrafficSignDetection('datasets/validationset', 'hsv_ycbcr+morph_op','','')
+    % call with -> TrafficSignDetection('datasets/validationset', 'hsv-morph_op2','ccl','')
 
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -58,15 +58,15 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     end
     
 
-    % windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
+    windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
     
     datasetAnalysis = DatasetAnalysis('datasets/train');
     
     files = ListFiles(directory);
     
-    for i=1:size(files,1)
-    % for i=1:2
+    % for i=1:size(files,1)
+    for i=1:30
 
         disp(sprintf('image%d',i));
 
@@ -78,7 +78,6 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
-        windowCandidates
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
@@ -94,26 +93,38 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         % display(pixelTN)
         
         % Accumulate object performance of the current image %%%%%%%%%%%%%%%%  (Needed after Week 3)
-        % windowAnnotations = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt'));
-        % [localWindowTP, localWindowFN, localWindowFP] = PerformanceAccumulationWindow(windowCandidates, windowAnnotations);
-        % windowTP = windowTP + localWindowTP;
-        % windowFN = windowFN + localWindowFN;
-        % windowFP = windowFP + localWindowFP;
+        windowAnnotations = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt'));
+        [localWindowTP, localWindowFN, localWindowFP] = PerformanceAccumulationWindow(windowCandidates, windowAnnotations);
+        windowTP = windowTP + localWindowTP;
+        windowFN = windowFN + localWindowFN;
+        windowFP = windowFP + localWindowFP;
     end
 
     % Plot performance evaluation
     [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
-    % [windowPrecision, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
 
-    f1score = F1Score(pixelPrecision, pixelRecall);
+    [windowPrecision, windowRecall, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
+
+    pixelF1Score = F1Score(pixelPrecision, pixelRecall);
+    windowF1Score = F1Score(windowPrecision, windowRecall);
     
+    disp('----------------- PIXEL ------------------');
     disp(strcat('Precision :', num2str(pixelPrecision)));
     disp(strcat('Accuracy  :', num2str(pixelAccuracy)));
     disp(strcat('Recall    :', num2str(pixelRecall)));
-    disp(strcat('F1 Score  :', num2str(f1score)));
+    disp(strcat('F1 Score  :', num2str(pixelF1Score)));
     disp(strcat('TP        :', num2str(pixelTP)));
     disp(strcat('FP        :', num2str(pixelFP)));
     disp(strcat('FN        :', num2str(pixelFN)));
+
+    disp('----------------- WINDOW ------------------');
+    disp(strcat('Precision :', num2str(windowPrecision)));
+    disp(strcat('Accuracy  :', num2str(windowAccuracy)));
+    disp(strcat('Recall    :', num2str(windowRecall)));
+    disp(strcat('F1 Score  :', num2str(windowF1Score)));
+    disp(strcat('TP        :', num2str(windowTP)));
+    disp(strcat('FP        :', num2str(windowFP)));
+    disp(strcat('FN        :', num2str(windowFN)));
     % [windowPrecision, windowAccuracy]
     
     % profile report
