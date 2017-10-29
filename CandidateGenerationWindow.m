@@ -11,7 +11,6 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
             tic;
             [windowCandidates] = SlidingWindow(mask, da, params);
             toc;
-            waitforbuttonpress();
         otherwise
             error('Incorrect method');
     end
