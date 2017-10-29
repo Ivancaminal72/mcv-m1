@@ -15,6 +15,11 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
             [pixelCandidates] = HoleFillingStrategy(im);
         case 'hist_packprop'
             [pixelCandidates] = HistogramBackprop(im);
+        case 'color-segmentation'
+            [pixelCandidates1] = ColorSegmentation(im, 'blue');
+            [pixelCandidates2] = ColorSegmentation(im, 'red');
+            pixelCandidates = pixelCandidates1 | pixelCandidates2;
+            pixelCandidates = MorphologicalTransform(pixelCandidates);
         otherwise
             error('Incorrect color space defined');
     end
@@ -126,3 +131,5 @@ function [pixelCandidates] = HistogramBackprop(im)
         end
     end
 end
+
+
