@@ -1,6 +1,9 @@
-function [wcand] = SlidingWindow(mask, da, params)
+function [uwcand] = SlidingWindow(mask, da, params)
     wcand = [];
     [rows, cols] = size(mask);
+    if(params.method == 'sumcum')
+        ii = IntegralImage(mask);
+    end
     vcomb = getCombinations(da, params.dims, params.ffs); %width and height combinations
     
     for c = 1:length(vcomb)
@@ -12,15 +15,23 @@ function [wcand] = SlidingWindow(mask, da, params)
             continue;
         end
         
-        for i = 1:params.jump:rows-(vcomb(c).h-1)
-            for j = 1:params.jump:cols-(vcomb(c).w-1)
+        %Set jump_y and jum_x values
+        if(params.overlap)
+            jump_y = round(vcomb(c).h*(1-params.jump));
+            jump_x = round(vcomb(c).w*(1-params.jump));
+        else 
+            jump_y = vcomb(c).h;
+            jump_x = vcomb(c).w;
+        end
+        
+        for i = 1:jump_y:rows-(vcomb(c).h-1)
+            for j = 1:jump_x:cols-(vcomb(c).w-1)
                 coords = struct('y', i, 'x', j, 'w', vcomb(c).w, 'h', vcomb(c).h);
                 
                 %Calculate filling_ratio
                 if(params.method == 'simple')
                     filling_ratio = FillingRatio_simple(mask, coords);
-                elseif(params.method == 'sumcum')
-                    ii = IntegralImage(mask);
+                elseif(params.method == 'sumcum')       
                     filling_ratio = FillingRatio_IntegralImage(coords, ii);
                 else
                     error('invalid params.method');
@@ -31,19 +42,52 @@ function [wcand] = SlidingWindow(mask, da, params)
                     continue;
                 end
                 
-                disp('hey');
                 wcand = [wcand; coords];
             end
         end
     end
-    
+    uwcand = getUnifiedWindowCandidates(wcand, zeros(size(mask)));
+    %showCandidates(mask, uwcand, wcand);
+end
+
+function uwcand = getUnifiedWindowCandidates(wcand, accum)
+    %Accumulate the detected spaces
+    for a = 1:length(wcand)
+        for i = wcand(a).y:wcand(a).y+wcand(a).h-1
+            for j = wcand(a).x:wcand(a).x+wcand(a).w-1
+                accum(i,j) = 1;
+            end
+        end
+    end
+    %Label the independent detected spaces
+    [labels, num] = bwlabel(logical(accum));
+    disp(num);
+    %Choose only ONE window candidate for every independent zone
+    index = zeros(num,1);
+    areas = zeros(num,1);
+    for idx = 1:length(wcand)
+         %The decision criteria is the maximum area
+         if(areas(labels(wcand(idx).y, wcand(idx).x)) < wcand(idx).w*wcand(idx).h)
+            areas(labels(wcand(idx).y, wcand(idx).x)) = wcand(idx).w*wcand(idx).h;
+            index(labels(wcand(idx).y, wcand(idx).x)) = idx;
+         end
+    end
+    %Preallocation
+    uwcand = repmat(struct('y', 0, 'x', 0, 'w', 0, 'h', 0), num);
+    for a = 1:num
+        uwcand(a)=wcand(index(a));
+    end
+end
+
+function showCandidates(mask, uwcand, wcand)
     figure(1);
     imshow(double(mask))
     for i = 1:length(wcand)
-        rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','r','LineWidth',2 );
+        rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
     end
-    waitforbuttonpress();
-    
+    for i = 1:length(uwcand)
+        rectangle('Position',[uwcand(i).x uwcand(i).y uwcand(i).w uwcand(i).h],'EdgeColor','r','LineWidth',1 );
+    end
 end
 
 %%% Filling ratio
