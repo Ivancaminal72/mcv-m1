@@ -47,27 +47,32 @@ function [uwcand] = SlidingWindow(mask, da, params)
         end
     end
     uwcand = getUnifiedWindowCandidates(wcand, zeros(size(mask)));
-    showCandidates(mask, uwcand, wcand); %If you want comment this line
+    %showCandidates(mask, uwcand, wcand);
 end
 
 function uwcand = getUnifiedWindowCandidates(wcand, accum)
+    %Accumulate the detected spaces
     for a = 1:length(wcand)
         for i = wcand(a).y:wcand(a).y+wcand(a).h-1
             for j = wcand(a).x:wcand(a).x+wcand(a).w-1
-                accum(i,j) = 255;
+                accum(i,j) = 1;
             end
         end
     end
+    %Label the independent detected spaces
     [labels, num] = bwlabel(logical(accum));
     disp(num);
+    %Choose only ONE window candidate for every independent zone
     index = zeros(num,1);
     areas = zeros(num,1);
     for idx = 1:length(wcand)
+         %The decision criteria is the maximum area
          if(areas(labels(wcand(idx).y, wcand(idx).x)) < wcand(idx).w*wcand(idx).h)
             areas(labels(wcand(idx).y, wcand(idx).x)) = wcand(idx).w*wcand(idx).h;
             index(labels(wcand(idx).y, wcand(idx).x)) = idx;
          end
     end
+    %Preallocation
     uwcand = repmat(struct('y', 0, 'x', 0, 'w', 0, 'h', 0), num);
     for a = 1:num
         uwcand(a)=wcand(index(a));
