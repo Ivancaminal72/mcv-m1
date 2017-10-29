@@ -15,7 +15,7 @@ function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
             [pixelCandidates] = HoleFillingStrategy(im);
         case 'hist_packprop'
             [pixelCandidates] = HistogramBackprop(im);
-        case 'color-segmentation'
+        case 'hsv-morph_op2'
             [pixelCandidates1] = ColorSegmentation(im, 'blue');
             [pixelCandidates2] = ColorSegmentation(im, 'red');
             pixelCandidates = pixelCandidates1 | pixelCandidates2;

@@ -5,8 +5,8 @@
     addpath(genpath('.'))
 
     % Configure this
-    team              = 0;  % Your team number
-    week              = 1;  % Week number
+    team              = 8;  % Your team number
+    week              = 3;  % Week number
     window_evaluation = 1;  % Whether to perform or not window evaluation: 0 for weeks 1&2, 1 for weeks 3,4&5 
 
 

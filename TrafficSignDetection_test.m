@@ -2,7 +2,9 @@
 % Template example for using on the test set (no annotations).
 % 
  
-function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, window_method, decision_method)
+function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_method, decision_method)
+    % TrafficSignDetection_test('datasets/test', 'results/week3/method1_ccl', 'hsv-morph_op2', 'ccl', '')
+
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
     % using a color segmentation. Then, using the color segmentation as a basis, the most likely window 
@@ -45,6 +47,7 @@ function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, wi
     %end
 
     files = ListFiles(input_dir);
+    datasetAnalysis = DatasetAnalysis('datasets/train');
     
     for ii=1:size(files,1),
 
@@ -58,40 +61,14 @@ function TrafficSignDetection_validation(input_dir, output_dir, pixel_method, wi
         
         
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % windowCandidates = CandidateGenerationWindow_Example(im, pixelCandidates, window_method); %%'SegmentationCCL' or 'SlidingWindow'  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); 
 
-        out_file1 = sprintf ('%s/test/pixelCandidates_%06d.png',  output_dir, ii);
-	    %out_file2 = sprintf ('%s/test/windowCandidates_%06d.mat', output_dir, ii);
+        out_file1 = sprintf ('%s/pixelCandidates_%06d.png',  output_dir, ii);
+	    out_file2 = sprintf ('%s/windowCandidates_%06d.mat', output_dir, ii);
 
 	    imwrite (pixelCandidates, out_file1);
-	    %save (out_file2, 'windowCandidates');        
+	    save (out_file2, 'windowCandidates');        
     end
 end
  
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CandidateGeneration
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function [pixelCandidates] = CandidateGenerationPixel_Color(im, space)
-
-    im=double(im);
-
-    switch space
-        case 'normrgb'
-            pixelCandidates = im(:,:,1)>100;
-            
-        otherwise
-            error('Incorrect color space defined');
-            return
-    end
-end    
-    
-
-function [windowCandidates] = CandidateGenerationWindow_Example(im, pixelCandidates, window_method)
-    windowCandidates = [ struct('x',double(12),'y',double(17),'w',double(32),'h',double(32)) ];
-end  
