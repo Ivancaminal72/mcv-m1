@@ -61,7 +61,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     % windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
     
-    datasetAnalysis = DatasetAnalysis('datasets/original');
+    datasetAnalysis = DatasetAnalysis('datasets/train');
     
     files = ListFiles(directory);
     
@@ -77,7 +77,8 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
+        windowCandidates
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
