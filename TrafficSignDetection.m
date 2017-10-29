@@ -64,11 +64,11 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     datasetAnalysis = DatasetAnalysis('datasets/original');
     
     files = ListFiles(directory);
-    tic
+    
     % for i=1:size(files,1)
-    for i=1:10
+    for i=1:30
 
-        disp(i)
+        disp(sprintf("image%d",i));
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
@@ -77,7 +77,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); %%  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
@@ -106,17 +106,15 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
 
     f1score = F1Score(pixelPrecision, pixelRecall);
     
-    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall]
-    display(pixelPrecision)
-    display(pixelAccuracy)
-    display(pixelSpecificity)
-    display(pixelRecall)
+    disp(pixelPrecision)
+    disp(pixelAccuracy)
+    disp(pixelSpecificity)
+    disp(pixelRecall)
     display(f1score)
     % [windowPrecision, windowAccuracy]
     
     %profile report
     %profile off
-    toc
 end
  
 
