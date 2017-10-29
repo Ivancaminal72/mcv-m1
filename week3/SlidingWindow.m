@@ -47,7 +47,7 @@ function [uwcand] = SlidingWindow(mask, da, params)
         end
     end
     uwcand = getUnifiedWindowCandidates(wcand, zeros(size(mask)));
-    %showCandidates(mask, uwcand, wcand);
+    showCandidates(mask, uwcand, wcand);
 end
 
 function uwcand = getUnifiedWindowCandidates(wcand, accum)
