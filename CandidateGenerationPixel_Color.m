@@ -43,7 +43,7 @@ function [pixelCandidates] = ThresholdsStrategy(im)
     %At first none pixel is candidate
     pixelCandidates = zeros(size(im,1),size(im,2));
 
-    %% Method 1 (Tresholds by colors) %%
+    % Method 1 (Tresholds by colors) %
     %Find pixel candidates according to different colors
     pixelCandidates = pixelCandidates | (im(:,:,1)>210 & im(:,:,2)<70 & im(:,:,3)<60); %Redish colors
     pixelCandidates = pixelCandidates | (im(:,:,1)>15 & im(:,:,2)<90 & im(:,:,3)<190); %Blueish colors
@@ -54,7 +54,6 @@ function [pixelCandidates] = ThresholdsStrategy2(im)
     %At first none pixel is candidate
     pixelCandidates = zeros(size(im,1),size(im,2));
 
-    %% Method 1 (Tresholds by colors) %%
     %Find pixel candidates according to different colors
     pixelCandidates = pixelCandidates | (im(:,:,1)>70 & im(:,:,2)<70 & im(:,:,3)<60); %Redish colors
     pixelCandidates = pixelCandidates | (im(:,:,1)<40 & im(:,:,2)<100 & im(:,:,3)>70); %Blueish colors

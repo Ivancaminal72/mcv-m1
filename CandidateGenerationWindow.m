@@ -1,11 +1,14 @@
-function [windowCandidates] = CandidateGenerationWindow(mask, method, da, im)
-    switch method
+function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
+    switch window_method
         case 'ccl'
-            im = double(im);
-            [windowCandidates] = SegmentationCCL(mask, da, im);
+            [windowCandidates] = SegmentationCCL(mask, da);
         case 'sliding_window'
-            im = double(im);
-            [windowCandidates] = SlidingWindow(mask, da, im);
+            params.jump = 10; %Jump of the sliding window
+            params.dims = 3; %Number width dimensions proved
+            params.ffs = 3; %Number of form_factors proved
+            params.method = 'sumcum'; %'sumcum' or 'simple'
+            
+            [windowCandidates] = SlidingWindow(mask, da, params);
         otherwise
             error('Incorrect method');
     end

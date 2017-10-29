@@ -4,13 +4,15 @@ function [BB_box] = SegmentationCCL(mask, da, im)
 [L, NUM] = bwlabeln(mask);
 %Obtain BBox for each CC
 blobMeasurements = regionprops(L, mask, 'all');
-coor=blobMeasurements(:).BoundingBox;
+
+BB_box = [];
 BB_Area=[];
 fr=[];
 ff=[];
 
 % calculate the for the obtained bounging boxes: filling ratio, area and form factor
 for i=1:NUM
+    disp(blobMeasurements(i).BoundingBox);
     coor(i,:)=blobMeasurements(i).BoundingBox;
     BB_Area(i)= coor(i,3)*coor(i,4);
     fr(i)= blobMeasurements(i).Area/BB_Area(i);
@@ -42,14 +44,14 @@ end
 
 % Form factor
 n=0;
+figure(1);
+imshow(double(mask))
 for t=1:m
-    if (ff2(t)>da('all').ff_min) && (ff2(t)<ff_max)
+    if (ff2(t)> da('all').ff_min) && (ff2(t)< da('all').ff_max)
         n=n+1;
         BB_box(n,:)=B_box(t,:);
-        figure()
-        imshow(mask)
         rectangle('Position',[BB_box(n,1),BB_box(n,2),BB_box(n,3),BB_box(n,4)],'EdgeColor','r','LineWidth',2 );
-        waitforbuttonpress
     end
 end
+waitforbuttonpress();
 end

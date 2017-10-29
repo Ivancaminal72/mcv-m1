@@ -1,5 +1,5 @@
-
 function [da] = DatasetAnalysis(directory)
+  disp(strcat('Analysing /', directory, '...'));
   % call with  ->  da = DatasetAnalysis('datasets/original')
 
   files = ListFiles(directory);
@@ -11,8 +11,6 @@ function [da] = DatasetAnalysis(directory)
     mask = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'));
     %sig -> signs 
     [annotations, sig] = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt')); 
-    
-    i
     
     % There can be many signs in one picture
     if size(sig, 2) ~= size(annotations, 1)
@@ -153,6 +151,7 @@ function [da] = DatasetAnalysis(directory)
      update_struct.freq = da(ks{m}).freq/da('all').count;
      da(ks{m}) = update_struct;
   end
+  disp('OK!');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
