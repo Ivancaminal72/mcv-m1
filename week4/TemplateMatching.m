@@ -1,10 +1,11 @@
-function [uwcand] = SlidingTemplate(mask, da, params, im)
+function [uwcand] = TemplateMatching(im, da, params)
     wcand = [];
-    [rows, cols] = size(mask);
+    [rows, cols] = size(im);
     if(params.method == 'sumcum')
-        ii = IntegralImage(mask);
+        ii = IntegralImage(im);
     end
     vcomb = getCombinations(da, params.dims, params.ffs); %width and height combinations
+    
     
     for c = 1:length(vcomb)
         area = vcomb(c).w * vcomb(c).h;
@@ -30,7 +31,7 @@ function [uwcand] = SlidingTemplate(mask, da, params, im)
                 
                 %Calculate filling_ratio
                 if(params.method == 'simple')
-                    filling_ratio = FillingRatio_simple(mask, coords);
+                    filling_ratio = FillingRatio_simple(im, coords);
                 elseif(params.method == 'sumcum')       
                     filling_ratio = FillingRatio_IntegralImage(coords, ii);
                 else
@@ -46,42 +47,12 @@ function [uwcand] = SlidingTemplate(mask, da, params, im)
             end
         end
     end
-    uwcand = getUnifiedWindowCandidates(wcand, zeros(size(mask)));
-    %showCandidates(mask, uwcand, wcand);
+    %showCandidates(im, uwcand, wcand);
 end
 
-function uwcand = getUnifiedWindowCandidates(wcand, accum)
-    %Accumulate the detected spaces
-    for a = 1:length(wcand)
-        for i = wcand(a).y:wcand(a).y+wcand(a).h-1
-            for j = wcand(a).x:wcand(a).x+wcand(a).w-1
-                accum(i,j) = 1;
-            end
-        end
-    end
-    %Label the independent detected spaces
-    [labels, num] = bwlabel(logical(accum));
-    disp(num);
-    %Choose only ONE window candidate for every independent zone
-    index = zeros(num,1);
-    areas = zeros(num,1);
-    for idx = 1:length(wcand)
-         %The decision criteria is the maximum area
-         if(areas(labels(wcand(idx).y, wcand(idx).x)) < wcand(idx).w*wcand(idx).h)
-            areas(labels(wcand(idx).y, wcand(idx).x)) = wcand(idx).w*wcand(idx).h;
-            index(labels(wcand(idx).y, wcand(idx).x)) = idx;
-         end
-    end
-    %Preallocation
-    uwcand = repmat(struct('y', 0, 'x', 0, 'w', 0, 'h', 0), num);
-    for a = 1:num
-        uwcand(a)=wcand(index(a));
-    end
-end
-
-function showCandidates(mask, uwcand, wcand)
+function showCandidates(im, uwcand, wcand)
     figure(1);
-    imshow(double(mask))
+    imshow(double(im))
     for i = 1:length(wcand)
         rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
     end
@@ -95,15 +66,14 @@ end
 %   1. struct 'coords' with .x, .y, .w, .h
 
 % 1. For loop
-function [fr] = FillingRatio_simple(mask, coords)
-  content_bb = mask(coords.y:coords.y+coords.h-1,coords.x:coords.x+coords.w-1);
+function [fr] = FillingRatio_simple(im, coords)
+  content_bb = im(coords.y:coords.y+coords.h-1,coords.x:coords.x+coords.w-1);
   S = nnz(content_bb);  
   fr =  S /(coords.w*coords.h);
 end
 
 % 2. Integral Image
 function [fr] = FillingRatio_IntegralImage(coords, ii)
-
   % Convert from x,y,w,z to 4 coordinates (x,y)
   a_coord = [coords.y+coords.h-1, coords.x+coords.w-1];
   b_coord = [coords.y, coords.x+coords.w-1] ;
@@ -173,6 +143,6 @@ function vcomb = getCombinations(da, dims, ffs)
 end
 
 % IntegralImage: Calculate the image integral
-function [ii] = IntegralImage(mask)
-  ii = cumsum(cumsum(mask,2));
+function [ii] = IntegralImage(im)
+  ii = cumsum(cumsum(im,2));
 end

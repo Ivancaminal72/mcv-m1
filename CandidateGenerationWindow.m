@@ -14,8 +14,15 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
             %toc;
             %waitforbuttonpress();
             [windowCandidates] = CompareWithTemplate(mask,windowCandidates);
-        case 'sliding_template'
-            
+        case 'template_matching'
+            params.overlap = true; %Do or not Overlap
+            params.jump = 0.5; %Overlap in percentage of the sliding window  
+            params.dims = 3; %Number width dimensions proved
+            params.ffs = 3; %Number of form_factors proved
+            params.method = 'simple'; %'sumcum' or 'simple' 
+            %tic;
+            [windowCandidates] = TemplateMatching(im, da, params);
+            %toc;
         otherwise
             error('Incorrect method');
     end
