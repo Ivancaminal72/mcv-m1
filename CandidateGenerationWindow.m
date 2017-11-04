@@ -1,8 +1,8 @@
-function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
+function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da,template_method)
     switch window_method
         case 'ccl'
             [windowCandidates] = SegmentationCCL(mask, da);
-            [windowCandidates] = CompareWithTemplate(mask,windowCandidates);
+            [windowCandidates] = CompareWithTemplate(mask,windowCandidates,template_method);
         case 'sliding_window'
             params.overlap = true; %Do or not Overlap
             params.jump = 0.5; %Overlap in percentage of the sliding window  
@@ -13,7 +13,7 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
             [windowCandidates] = SlidingWindow(mask, da, params);
             %toc;
             %waitforbuttonpress();
-            [windowCandidates] = CompareWithTemplate(mask,windowCandidates);
+            [windowCandidates] = CompareWithTemplate(mask,windowCandidates,template_method);
         case 'template_matching'
             params.overlap = true; %Do or not Overlap
             params.jump = 0.5; %Overlap in percentage of the sliding window  

@@ -3,7 +3,7 @@
 % 
 
  
-function TrafficSignDetection(directory, pixel_method, window_method, decision_method)
+function TrafficSignDetection(directory, pixel_method, window_method, decision_method,template_method)
     addpath(genpath('.'));
     
     % call with -> TrafficSignDetection('datasets/validationset', 'hsv-morph_op2','ccl','')
@@ -77,7 +77,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); %%  (Needed after Week 3)
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis,template_method); %%  (Needed after Week 3)
         
         % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
         pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;

@@ -1,10 +1,29 @@
 function [windowCandidates] = CompareWithTemplate(mask, B,template_method)
-addpath(templates)
+addpath('../week4/templates');
 a=load ('mean_train.mat');
+windowCandidates = [];
    switch template_method
-        case 'substration'
-
+        case 'subtraction'
+            count=0;
+            for i = 1:length(B)
+                    ImB= mask(B(i).y:B(i).y+B(i).h-1,B(i).x:win(i).x+B(i).w-1);
+                for j=1:4
+                    T=a.templates(:,:,4);
+                    ImB= imresize(ImB, size(T));
+                    Diff=abs(T-ImB);
+                    Sum=sum(sum(Diff));
+                    Mean(j)=Sum/(size(Diff,1)*size(Diff,2));
+                end
+                if (size(B.x) ~= 0)
+                    if min(Mean)<0.4
+                    count=count+1;
+                    windowCandidates(count) = [struct('x',double(B(i).x),'y',double(B(i).y),'w',double(B(i).w),'h',double(B(i).h))];
+                    end
+                end
+            end
+            
         case 'correlation'
+            ccount=0;
             for i = 1:length(B)
                     ImB= mask(B(i).y:B(i).y+B(i).h-1,B(i).x:win(i).x+B(i).w-1);
                 for j=1:4
@@ -19,14 +38,14 @@ a=load ('mean_train.mat');
                 if max(C_value)>0.5
                  if (size(B.x) ~= 0)
                     windowCandidates = [struct('x',double(0),'y',double(0),'w',double(0),'h',double(0))];
-                    for i=1:size(BB_box, 1)
-                        windowCandidates(i) = [struct('x',double(B(i).x),'y',double(B(i).y),'w',double(B(i).w),'h',double(B(i).h))];
+                    count=count+1;
+                    windowCandidates(count) = [struct('x',double(B(i).x),'y',double(B(i).y),'w',double(B(i).w),'h',double(B(i).h))];
                     end
                  end
                 end
             end
-            
-        otherwise
-            error('Incorrect method');
+%             
+%         otherwise
+%             error('Incorrect method');
     end
 

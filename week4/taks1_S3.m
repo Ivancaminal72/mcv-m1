@@ -11,8 +11,8 @@ BB_Area=[];
 fr=[];
 ff=[];
 % calculate the for the obtained bounging boxes: filling ratio, area and form factor
-figure()
-imshow(I)
+% figure()
+% imshow(I)
 for i=1:NUM
     coor(i,:)=blobMeasurements(i).BoundingBox;
     BB_Area(i)= coor(i,3)*coor(i,4);
@@ -48,7 +48,7 @@ for t=1:m
         n=n+1;
         BB_box(n,:)=B_box(t,:);
         bbimage2(n)=bbimage1(t);
-        rectangle('Position',[BB_box(n,1),BB_box(n,2),BB_box(n,3),BB_box(n,4)],'EdgeColor','r','LineWidth',2 );
+        %rectangle('Position',[BB_box(n,1),BB_box(n,2),BB_box(n,3),BB_box(n,4)],'EdgeColor','r','LineWidth',2 );
     end
 end
 
@@ -63,19 +63,26 @@ y=BB_box(2);
 w=BB_box(3);
 h=BB_box(4);
 ImB=I(round(y:(y+h-1)),round(x:(x+w-1)));
-figure()
-imshow(ImB)
+% figure()
+% imshow(ImB)
 
 %Correlation
 addpath('templates');
 a=load ('mean_train.mat');
-            T=a.templates(:,:,3);
+            T=a.templates(:,:,4);
             %T=logical(T);
             ImB= imresize(ImB, size(T));
-            Correlation=corrcoef(ImB,T);
-            diag=eye(size(Correlation));
-            Correlation=Correlation-diag;
-            C_value=max(max(Correlation));
+            Diff=abs(T-ImB);
+            Sum=sum(sum(Diff));
+            Mean=Sum/(size(Diff,1)*size(Diff,2))
+            windowCandidates = [struct('x',double(0),'y',double(0),'w',double(0),'h',double(0))];
+            windowCandidates(count) = [struct('x',1,'y',2,'w',3,'h',4)];
+                    
+            
+%             Correlation=corrcoef(ImB,T);
+%             diag=eye(size(Correlation));
+%             Correlation=Correlation-diag;
+%             C_value=max(max(Correlation));
             
 %             % Find the average of the BBox
 %             meanIm=mean2(ImB);
