@@ -102,7 +102,7 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
 
     % Plot performance evaluation
     [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
-
+    
     [windowPrecision, windowRecall, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
 
     pixelF1Score = F1Score(pixelPrecision, pixelRecall);

@@ -4,7 +4,7 @@
  
 function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_method, decision_method)
     % TrafficSignDetection_test('datasets/test', 'results/week3/method1_ccl', 'hsv-morph_op2', 'ccl', '')
-
+    addpath(genpath('.'));
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
     % using a color segmentation. Then, using the color segmentation as a basis, the most likely window 
@@ -45,11 +45,19 @@ function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_m
     %   rectangleTemplate = load('TemplateRectangles.mat');
     %   triangleTemplate  = load('TemplateTriangles.mat');
     %end
-
+    
+    if (7==exist(output_dir,'dir'))
+        rmdir(output_dir, 's');
+    end
+    status = mkdir(output_dir);
+    if~status
+        error('results_directory creation');
+    end
+    
     files = ListFiles(input_dir);
     datasetAnalysis = DatasetAnalysis('datasets/train');
     
-    for ii=1:size(files,1),
+    for ii=1:size(files,1)
 
         ii
         
@@ -62,9 +70,9 @@ function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_m
         
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); 
-
+        
         out_file1 = sprintf ('%s/pixelCandidates_%06d.png',  output_dir, ii);
-	    out_file2 = sprintf ('%s/windowCandidates_%06d.mat', output_dir, ii);
+	    out_file2 = sprintf ('%s/pixelCandidates_%06d.mat', output_dir, ii);
 
 	    imwrite (pixelCandidates, out_file1);
 	    save (out_file2, 'windowCandidates');        

@@ -1,10 +1,8 @@
-function [da] = DatasetAnalysis(directory)
+function [da] = DatasetAnalysis(directory) 
+%call with  ->  da = DatasetAnalysis('datasets/train')
+  
   disp(strcat('Analysing /', directory, '...'));
-  % call with  ->  da = DatasetAnalysis('datasets/original')
-
   files = ListFiles(directory);
-  % dataset_description = zeros(,10)
-    
   da = containers.Map;
   
   for i=1:size(files,1)

@@ -8,9 +8,11 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da)
             params.dims = 3; %Number width dimensions proved
             params.ffs = 3; %Number of form_factors proved
             params.method = 'simple'; %'sumcum' or 'simple'
-            tic;
+            %tic;
             [windowCandidates] = SlidingWindow(mask, da, params);
-            toc;
+            %toc;
+        case 'sliding_template'
+            
         otherwise
             error('Incorrect method');
     end

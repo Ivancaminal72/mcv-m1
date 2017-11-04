@@ -1,4 +1,4 @@
-function [uwcand] = SlidingWindow(mask, da, params)
+function [uwcand] = SlidingTemplate(mask, da, params, im)
     wcand = [];
     [rows, cols] = size(mask);
     if(params.method == 'sumcum')
