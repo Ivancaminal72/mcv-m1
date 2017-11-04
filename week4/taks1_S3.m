@@ -55,7 +55,7 @@ end
 x=0;
 y=0;
 % manera 1
-ImBBox= blobMeasurements(bbimage2).ConvexImage
+ImBBox = blobMeasurements(bbimage2).ConvexImage
 
 % manera 2
 
