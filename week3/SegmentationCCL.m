@@ -1,4 +1,4 @@
-function [windowCandidates] = SegmentationCCL(mask, da, im)
+function [windowCandidates] = SegmentationCCL(mask, da)
 
     %Detect connected components
     [L, NUM] = bwlabeln(mask);
