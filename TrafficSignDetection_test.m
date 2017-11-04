@@ -68,8 +68,8 @@ function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_m
         pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
         
         
-        % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis); 
+        % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+        windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); 
         
         out_file1 = sprintf ('%s/pixelCandidates_%06d.png',  output_dir, ii);
 	    out_file2 = sprintf ('%s/pixelCandidates_%06d.mat', output_dir, ii);

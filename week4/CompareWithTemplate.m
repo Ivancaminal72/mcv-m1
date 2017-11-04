@@ -1,5 +1,5 @@
 function [windowCandidates] = CompareWithTemplate(mask, B, template_method)
-a=load ('./week4/templates/mean_trainingset.mat');
+a=load ('./week4/templates/mean_train.mat');
 windowCandidates = [];
    switch template_method
         case 'subtraction'
@@ -7,7 +7,7 @@ windowCandidates = [];
             for i = 1:length(B)
                     ImB= mask(B(i).y:B(i).y+B(i).h-1,B(i).x:B(i).x+B(i).w-1);
                 for j=1:4
-                    T=a.templates(:,:,4);
+                    T=a.templates(:,:,j);
                     ImB= imresize(ImB, size(T));
                     Diff=abs(T-ImB);
                     Sum=sum(sum(Diff));

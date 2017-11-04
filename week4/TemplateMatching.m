@@ -1,11 +1,17 @@
-function [uwcand] = TemplateMatching(im, da, params)
-    wcand = [];
-    [rows, cols] = size(im);
-    if(params.method == 'sumcum')
-        ii = IntegralImage(im);
-    end
-    vcomb = getCombinations(da, params.dims, params.ffs); %width and height combinations
+function [uwcand] = TemplateMatching(mask, da, params, im)
+    %Load the Generated Templates
+    object = load ('./week4/templates/mean_train.mat');
+    T = object.templates;
+    %Compute edges of the image and the chamfer distance
+    im_g = rgb2gray(im);
+    ime = edge(im_g,'Canny');
+    ime = bwdist(ime);
     
+    wcand = [];
+    uwcand = [];
+    [rows, cols] = size(ime);
+    
+    vcomb = getCombinations(da, params.dims, params.ffs); %width and height combinations
     
     for c = 1:length(vcomb)
         area = vcomb(c).w * vcomb(c).h;
@@ -14,7 +20,7 @@ function [uwcand] = TemplateMatching(im, da, params)
         if(area < da('all').min_area || area > da('all').max_area)
             disp('Filtration of combination: area');
             continue;
-        end
+        end         
         
         %Set jump_y and jum_x values
         if(params.overlap)
@@ -25,88 +31,76 @@ function [uwcand] = TemplateMatching(im, da, params)
             jump_x = vcomb(c).w;
         end
         
-        for i = 1:jump_y:rows-(vcomb(c).h-1)
-            for j = 1:jump_x:cols-(vcomb(c).w-1)
-                coords = struct('y', i, 'x', j, 'w', vcomb(c).w, 'h', vcomb(c).h);
-                
-                %Calculate filling_ratio
-                if(params.method == 'simple')
-                    filling_ratio = FillingRatio_simple(im, coords);
-                elseif(params.method == 'sumcum')       
-                    filling_ratio = FillingRatio_IntegralImage(coords, ii);
-                else
-                    error('invalid params.method');
+        %Apply the four templates
+        for ch =1:4
+            temp = padarray(T(:,:,ch), [1 1], 0);%Add 1 pixel of zero padding
+            temp = imresize(temp,[vcomb(c).h vcomb(c).w]); %Resize Template to the combination
+            TE = edge(temp,'Canny'); %Compute edges for every Template type (4 channels)
+            
+            %Sliding Loop
+            for i = 1:jump_y:rows-(vcomb(c).h-1)
+                for j = 1:jump_x:cols-(vcomb(c).w-1)
+                    coords = struct('y', i, 'x', j, 'w', vcomb(c).w, 'h', vcomb(c).h, 'cy', i+round(vcomb(c).h/2), 'cx', j+round(vcomb(c).w/2), 'sum',  0);                   
+                    
+                    %Apply the Template to the image
+                    result = ime(i:i+vcomb(c).h-1, j:j+vcomb(c).w-1).*TE;
+                    coords.sum = sum(sum(result)); 
+                    
+                    %disp(coords.sum);
+                    %Accept or not he window as a candidate
+                    if(coords.sum <= params.threshold)
+                        wcand = [wcand; coords];
+                    end
+                    
                 end
-                
-                %Filling_ratio filter
-                if(filling_ratio < da('all').fr_min || filling_ratio > da('all').fr_max)
-                    continue;
-                end
-                
-                wcand = [wcand; coords];
             end
         end
     end
-    %showCandidates(im, uwcand, wcand);
+    disp(length(wcand));
+    if(length(wcand)>1)
+        overlapLimitDistance = 2*size(T,1); %The maximum distance that are considered 
+        uwcand = getUnifiedWindowCandidates(wcand, overlapLimitDistance);
+    elseif(length(wcand)==1)
+        uwcand = struct('y', wcand(1).y, 'x', wcand(1).x, 'w', wcand(1).w, 'h', wcand(1).h);
+    end
+    showCandidates(mask, uwcand, wcand);
+end
+
+function uwcand = getUnifiedWindowCandidates(wcand, dist)
+    uwcand = [];
+    %Delete overlapped windows by distance
+    %Algorithm to do it:
+    for a=1:length(wcand)
+        for b=1:length(wcand)
+            if(a==b)
+                continue;
+            elseif(wcand(b).sum == -1)
+                continue;
+            elseif(pdist([wcand(a).cy,wcand(a).cx; wcand(b).cy,wcand(b).cx]) < dist)
+                if(wcand(a).sum < wcand(b).sum)
+                    wcand(b).sum = -1;
+                else
+                    wcand(a).sum = -1;
+                end
+            end
+        end
+    end
+    for a = 1:length(wcand)
+        if(wcand(a).sum ~= -1)
+            uwcand = [uwcand; struct('y', wcand(a).y, 'x', wcand(a).x, 'w', wcand(a).w, 'h', wcand(a).h)];
+        end
+    end
 end
 
 function showCandidates(im, uwcand, wcand)
     figure(1);
-    imshow(double(im))
+    imshow(im)
     for i = 1:length(wcand)
         rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
     end
     for i = 1:length(uwcand)
         rectangle('Position',[uwcand(i).x uwcand(i).y uwcand(i).w uwcand(i).h],'EdgeColor','r','LineWidth',1 );
     end
-end
-
-%%% Filling ratio
-% Arguments:
-%   1. struct 'coords' with .x, .y, .w, .h
-
-% 1. For loop
-function [fr] = FillingRatio_simple(im, coords)
-  content_bb = im(coords.y:coords.y+coords.h-1,coords.x:coords.x+coords.w-1);
-  S = nnz(content_bb);  
-  fr =  S /(coords.w*coords.h);
-end
-
-% 2. Integral Image
-function [fr] = FillingRatio_IntegralImage(coords, ii)
-  % Convert from x,y,w,z to 4 coordinates (x,y)
-  a_coord = [coords.y+coords.h-1, coords.x+coords.w-1];
-  b_coord = [coords.y, coords.x+coords.w-1] ;
-  c_coord = [coords.y+coords.h-1, coords.x] ;
-  d_coord = [coords.y, coords.x];
-
-  % Find coordenades (x,y) of points a,b,c,d
-  d_coord = d_coord - [1,1];
-  b_coord = b_coord - [1,0];
-  c_coord = c_coord - [0,1];
-
-  % Careful, if the bounding box is touching a border
-  % the corresponding part is equal to 0
-
-  A=0;B=0;C=0;D=0;
-  if a_coord(1) ~= 0 && a_coord(2) ~= 0
-    A = ii(a_coord(1), a_coord(2));  
-  end
-  if b_coord(1) ~= 0 && b_coord(2) ~= 0
-    B = ii(b_coord(1), b_coord(2));  
-  end
-  if c_coord(1) ~= 0 && c_coord(2) ~= 0
-    C = ii(c_coord(1), c_coord(2));  
-  end
-  if d_coord(1) ~= 0 && d_coord(2) ~= 0
-    D = ii(d_coord(1), d_coord(2));  
-  end
-
-  % Sum
-  S = A - B - C + D;
-
-  % Filling ratio
-  fr = S/(coords.w*coords.h);
 end
 
 function vcomb = getCombinations(da, dims, ffs)
@@ -140,9 +134,4 @@ function vcomb = getCombinations(da, dims, ffs)
     else
         error('incorrect number of dims or ffs');
     end   
-end
-
-% IntegralImage: Calculate the image integral
-function [ii] = IntegralImage(im)
-  ii = cumsum(cumsum(im,2));
 end
