@@ -55,13 +55,64 @@ end
 x=0;
 y=0;
 % manera 1
-ImBBox = blobMeasurements(bbimage2).ConvexImage
+%ImBBox = blobMeasurements(bbimage2).ConvexImage
 
 % manera 2
-
-imbbox= I(round(BB_box(1):(BB_box(1)+BB_box(3)),round(BB_box(2):(BB_box(2)+BB_box(4)))));
+x=BB_box(1);
+y=BB_box(2);
+w=BB_box(3);
+h=BB_box(4);
+ImB=I(round(y:(y+h-1)),round(x:(x+w-1)));
 figure()
-imshow(ImBBox)
+imshow(ImB)
+
+%Correlation
+addpath('templates');
+a=load ('mean_train.mat');
+            T=a.templates(:,:,3);
+            %T=logical(T);
+            ImB= imresize(ImB, size(T));
+            Correlation=corrcoef(ImB,T);
+            diag=eye(size(Correlation));
+            Correlation=Correlation-diag;
+            C_value=max(max(Correlation));
+            
+%             % Find the average of the BBox
+%             meanIm=mean2(ImB);
+%             % Find the average of the Template
+%             meanT=mean2(T);
+%             %substract the average from BBox an Template
+%             Imsub= ImB-meanIm;
+%             Tsub= T-meanT;
+%             %covariance of BBox image and Template
+%             covImT=mean2(Imsub.*Tsub);
+%             %Find the standard deviation of the BBox and Template
+%             stdIm=std(ImB(:),1);
+%             stdB=std(T(:),1);
+%             Correlation=covImT./(stdIm*stdB+1)
+%             if max(Correlation)>0.5
+%                  if (size(BB_box,1) ~= 0)
+%                     windowCandidates = [struct('x',double(0),'y',double(0),'w',double(0),'h',double(0))];
+%                     for i=1:size(BB_box, 1)
+%                         windowCandidates(i) = [struct('x',double(BB_box(i,1)),'y',double(BB_box(i,2)),'w',double(BB_box(i,3)),'h',double(BB_box(i,4)))];
+%                     end
+%                  end
+%         end
 
 
-
+%% FUNCIO
+%                     % Find the average of the BBox
+%                     meanIm=mean2(ImB);
+%                     % Find the average of the Template
+%                     meanT=mean2(T);
+%                     %substract the average from BBox an Template
+%                     Imsub= ImB-meanIm;
+%                     Tsub= T-meanT;
+%                     %covariance of BBox image and Template
+%                     covImT=mean2(Imsub.*Tsub);
+%                     %Find the standard deviation of the BBox and Template
+%                     stdIm=std(ImB(:),1);
+%                     stdB=std(T(:),1);
+%                     Correlation(i,j)=covImT./(stdIm*stdB+1);
+% 
+% 
