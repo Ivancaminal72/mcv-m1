@@ -2,7 +2,7 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da,
     switch window_method
         case 'ccl'
             [windowCandidates] = SegmentationCCL(mask, da);
-            template_method = 'subtraction';
+            template_method = 'correlation';
             [windowCandidates] = CompareWithTemplate(mask, windowCandidates, template_method);
         case 'sliding_window'
             params.overlap = true; %Do or not Overlap
