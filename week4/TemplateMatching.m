@@ -28,26 +28,26 @@ function [uwcand] = TemplateMatching(mask, da, params, im)
         else 
             jump_y = vcomb(c).h;
             jump_x = vcomb(c).w;
-        end
+        end              
         
         %Apply the four templates
         for ch =1:4
             temp = padarray(T(:,:,ch), [1 1], 0);%Add 1 pixel of zero padding
             temp = imresize(temp,[vcomb(c).h vcomb(c).w]); %Resize Template to the combination
-            TE = edge(temp,'Canny'); %Compute edges for every Template type (4 channels)
+            TE = edge(temp,'Canny', [0.5 0.9]); %Compute edges for every Template type (4 channels)                       
             
             %Sliding Loop
             for i = 1:jump_y:rows-(vcomb(c).h-1)
                 for j = 1:jump_x:cols-(vcomb(c).w-1)
                     coords = struct('y', i, 'x', j, 'w', vcomb(c).w, 'h', vcomb(c).h, 'cy', i+round(vcomb(c).h/2), 'cx', j+round(vcomb(c).w/2), 'sum',  0);                   
-                    
+                                                            
                     %Apply the Template to the image
                     result = ime(i:i+vcomb(c).h-1, j:j+vcomb(c).w-1).*TE;
                     coords.sum = sum(sum(result)); 
                     
                     %disp(coords.sum);
                     %Accept or not he window as a candidate
-                    threshold = sum(sum(TE)) * 5;
+                    threshold = sum(sum(TE)) * params.threshold;
                     if(coords.sum <= threshold)
                         wcand = [wcand; coords];
                     end
@@ -64,7 +64,7 @@ function [uwcand] = TemplateMatching(mask, da, params, im)
     elseif(length(wcand)==1)
         uwcand = struct('y', wcand(1).y, 'x', wcand(1).x, 'w', wcand(1).w, 'h', wcand(1).h);
     end
-    % showCandidates(im, ime, uwcand, wcand);
+    showCandidates(im, ime, uwcand, wcand);
 end
 
 function uwcand = getUnifiedWindowCandidates(wcand, dist)
@@ -75,17 +75,19 @@ function uwcand = getUnifiedWindowCandidates(wcand, dist)
         for b=1:length(wcand)
             if(a==b)
                 continue;
+            elseif(wcand(b).x == -1)
+                continue;
             elseif(pdist([wcand(a).cy,wcand(a).cx; wcand(b).cy,wcand(b).cx]) < dist)
                 if(wcand(a).sum < wcand(b).sum)
-                    wcand(b).x = -3000;
+                    wcand(b).x = -1;
                 else
-                    wcand(a).x = -3000;
+                    wcand(a).x = -1;
                 end
             end
         end
     end
     for a = 1:length(wcand)
-        if(wcand(a).sum ~= -1)
+        if(wcand(a).x ~= -1)
             uwcand = [uwcand; struct('y', wcand(a).y, 'x', wcand(a).x, 'w', wcand(a).w, 'h', wcand(a).h)];
         end
     end
@@ -98,11 +100,12 @@ function showCandidates(im, ime, uwcand, wcand)
     % subplot(1,2,2)
     % imshow(ime)
     for i = 1:length(wcand)
-        % rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
+        rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
     end
     for i = 1:length(uwcand)
         rectangle('Position',[uwcand(i).x uwcand(i).y uwcand(i).w uwcand(i).h],'EdgeColor','r','LineWidth',1 );
     end
+    waitforbuttonpress();
 end
 
 function vcomb = getCombinations(da, dims, ffs)
@@ -112,7 +115,7 @@ function vcomb = getCombinations(da, dims, ffs)
     
     if(dims > 0 && ffs > 0)
         %Obtain the division period
-        per_w = (da('all').w_max-da('all').w_min)/(ffs+1);
+        per_w = (da('all').w_max-da('all').w_min)/(dims+1);
         per_ff = (da('all').ff_max-da('all').ff_min)/(ffs+1);
         %Preallocate vcomb
         vcomb(1:(dims*ffs)) = struct('w', 0, 'h', 0);
@@ -121,14 +124,14 @@ function vcomb = getCombinations(da, dims, ffs)
         mf=zeros(dims*ffs,1); %multiplier of the period of the form_factor
         for d = 1:dims
             for f = 1:ffs
-                c = f+(d-1)*dims;
+                c = f+(d-1)*ffs;
                 md(c) = d;
                 mf(c) = f;
             end
         end
         
         %Calculate width and heigth combinations
-        for c = 1:(dims*ffs)         
+        for c = 1:(dims*ffs)          
             vcomb(c).w = round(da('all').w_min+per_w*md(c));
             vcomb(c).h = round((da('all').w_min+per_w*md(c))/(da('all').ff_min+per_ff*mf(c)));
         end
@@ -143,17 +146,20 @@ function ime = findEdges_gray(im)
     im_g = rgb2gray(im);
     [ime, th] = edge(im_g,'Canny', [0.0112    0.281]);
     ime = bwdist(ime);
-    imshow(ime)
+    %imshow(ime)
+    %waitforbuttonpress();
 end
 
 function ime = findEdges_ycbcr(im)
+    %imshow(im)
+    %waitforbuttonpress();
     im_g = rgb2ycbcr(im);
-
-    th = [0.0112    0.40];
+    th = [0.3    0.7];
     ime_cb = edge(im_g(:,:,2),'Canny', th);
     ime_cr = edge(im_g(:,:,3),'Canny', th);
     ime = ime_cb | ime_cr;
+    %imshow(ime)
+    %waitforbuttonpress();
     ime = bwdist(ime);
-
-    imshow(ime)
+    
 end

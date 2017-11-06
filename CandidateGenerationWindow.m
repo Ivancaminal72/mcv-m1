@@ -24,10 +24,10 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da,
             %waitforbuttonpress();
         case 'template_matching'
             params.overlap = true; %Do or not Overlap
-            params.jump = 0.5; %Overlap in percentage of the sliding window  
+            params.jump = 0.75; %Overlap in percentage of the sliding window  
             params.dims = 3; %Number width dimensions proved
             params.ffs = 3; %Number of form_factors proved
-            params.threshold = 250; %Threshold that limits the result sumatory 
+            params.threshold = 10; %Threshold that limits the result sumatory 
             %tic;
             [windowCandidates] = TemplateMatching(mask, da, params, im);
             disp(length(windowCandidates));
