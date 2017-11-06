@@ -3,10 +3,9 @@ function [uwcand] = TemplateMatching(mask, da, params, im)
     object = load ('./week4/templates/mean_train.mat');
     T = object.templates;
     %Compute edges of the image and the chamfer distance
-    im_g = rgb2gray(im);
-    ime = edge(im_g,'Canny');
-    ime = bwdist(ime);
     
+    ime=findEdges_ycbcr(im);
+
     wcand = [];
     uwcand = [];
     [rows, cols] = size(ime);
@@ -48,7 +47,8 @@ function [uwcand] = TemplateMatching(mask, da, params, im)
                     
                     %disp(coords.sum);
                     %Accept or not he window as a candidate
-                    if(coords.sum <= params.threshold)
+                    threshold = sum(sum(TE)) * 5;
+                    if(coords.sum <= threshold)
                         wcand = [wcand; coords];
                     end
                     
@@ -57,13 +57,14 @@ function [uwcand] = TemplateMatching(mask, da, params, im)
         end
     end
     disp(length(wcand));
+
     if(length(wcand)>1)
         overlapLimitDistance = 2*size(T,1); %The maximum distance that are considered 
         uwcand = getUnifiedWindowCandidates(wcand, overlapLimitDistance);
     elseif(length(wcand)==1)
         uwcand = struct('y', wcand(1).y, 'x', wcand(1).x, 'w', wcand(1).w, 'h', wcand(1).h);
     end
-    showCandidates(mask, uwcand, wcand);
+    % showCandidates(im, ime, uwcand, wcand);
 end
 
 function uwcand = getUnifiedWindowCandidates(wcand, dist)
@@ -74,13 +75,11 @@ function uwcand = getUnifiedWindowCandidates(wcand, dist)
         for b=1:length(wcand)
             if(a==b)
                 continue;
-            elseif(wcand(b).sum == -1)
-                continue;
             elseif(pdist([wcand(a).cy,wcand(a).cx; wcand(b).cy,wcand(b).cx]) < dist)
                 if(wcand(a).sum < wcand(b).sum)
-                    wcand(b).sum = -1;
+                    wcand(b).x = -3000;
                 else
-                    wcand(a).sum = -1;
+                    wcand(a).x = -3000;
                 end
             end
         end
@@ -92,11 +91,14 @@ function uwcand = getUnifiedWindowCandidates(wcand, dist)
     end
 end
 
-function showCandidates(im, uwcand, wcand)
+function showCandidates(im, ime, uwcand, wcand)
     figure(1);
+    subplot(1,1,1)
     imshow(im)
+    % subplot(1,2,2)
+    % imshow(ime)
     for i = 1:length(wcand)
-        rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
+        % rectangle('Position',[wcand(i).x wcand(i).y wcand(i).w wcand(i).h],'EdgeColor','y','LineWidth',1 );
     end
     for i = 1:length(uwcand)
         rectangle('Position',[uwcand(i).x uwcand(i).y uwcand(i).w uwcand(i).h],'EdgeColor','r','LineWidth',1 );
@@ -134,4 +136,24 @@ function vcomb = getCombinations(da, dims, ffs)
     else
         error('incorrect number of dims or ffs');
     end   
+end
+
+
+function ime = findEdges_gray(im)
+    im_g = rgb2gray(im);
+    [ime, th] = edge(im_g,'Canny', [0.0112    0.281]);
+    ime = bwdist(ime);
+    imshow(ime)
+end
+
+function ime = findEdges_ycbcr(im)
+    im_g = rgb2ycbcr(im);
+
+    th = [0.0112    0.40];
+    ime_cb = edge(im_g(:,:,2),'Canny', th);
+    ime_cr = edge(im_g(:,:,3),'Canny', th);
+    ime = ime_cb | ime_cr;
+    ime = bwdist(ime);
+
+    imshow(ime)
 end

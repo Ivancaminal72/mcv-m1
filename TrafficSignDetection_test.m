@@ -3,7 +3,9 @@
 % 
  
 function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_method, decision_method)
-    % TrafficSignDetection_test('datasets/test', 'results/week3/method1_ccl', 'hsv-morph_op2', 'ccl', '')
+    % TrafficSignDetection_test('datasets/test', 'results/week4/method1_ccl_corr', 'hsv-morph_op2', 'ccl_corr', '')
+    % TrafficSignDetection_test('datasets/test', 'results/week4/method1_ccl_sub', 'hsv-morph_op2', 'ccl_sub', '')
+    % TrafficSignDetection_test('datasets/test', 'results/week4/method3_template', 'hsv-morph_op2', 'template_matching', '')
     addpath(genpath('.'));
     % TrafficSignDetection
     % Perform detection of Traffic signs on images. Detection is performed first at the pixel level
@@ -71,8 +73,8 @@ function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_m
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); 
         
-        out_file1 = sprintf ('%s/pixelCandidates_%06d.png',  output_dir, ii);
-	    out_file2 = sprintf ('%s/pixelCandidates_%06d.mat', output_dir, ii);
+        out_file1 = sprintf ('%s/windowCandidates_%06d.png',  output_dir, ii);
+	    out_file2 = sprintf ('%s/windowCandidates_%06d.mat', output_dir, ii);
 
 	    imwrite (pixelCandidates, out_file1);
 	    save (out_file2, 'windowCandidates');        

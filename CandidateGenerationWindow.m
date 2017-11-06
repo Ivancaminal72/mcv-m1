@@ -1,8 +1,12 @@
 function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da, im)
     switch window_method
-        case 'ccl'
+        case 'ccl_corr'
             [windowCandidates] = SegmentationCCL(mask, da);
             template_method = 'correlation';
+            [windowCandidates] = CompareWithTemplate(mask, windowCandidates, template_method);
+        case 'ccl_sub'
+            [windowCandidates] = SegmentationCCL(mask, da);
+            template_method = 'subtraction';
             [windowCandidates] = CompareWithTemplate(mask, windowCandidates, template_method);
         case 'sliding_window'
             params.overlap = true; %Do or not Overlap
@@ -26,7 +30,6 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da,
             params.threshold = 250; %Threshold that limits the result sumatory 
             %tic;
             [windowCandidates] = TemplateMatching(mask, da, params, im);
-            waitforbuttonpress();
             disp(length(windowCandidates));
             %toc;
         otherwise
