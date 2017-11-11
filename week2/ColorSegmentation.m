@@ -1,8 +1,8 @@
 function [mask]=ColorSegmentation(image,color)
 % Convert image to HSV color space
 
- image_hsv = colorspace('rgb-> hsv',image);
-
+ image_hsv = colorspace('rgb-> hsv',image); 
+ image_hsv = image;
  % Split the channels
  h = image_hsv(:,:,1);
  s = image_hsv(:,:,2);
