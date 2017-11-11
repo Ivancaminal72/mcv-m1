@@ -67,8 +67,9 @@ function TrafficSignDetection_test(input_dir, output_dir, pixel_method, window_m
         im = imread(strcat(input_dir,'/',files(ii).name));
      
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
-        
+        if(window_method ~= 'template_matching' && window_method ~= 'hough')
+            pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
+        end
         
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); 

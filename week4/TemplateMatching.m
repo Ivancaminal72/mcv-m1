@@ -1,4 +1,4 @@
-function [uwcand] = TemplateMatching(mask, da, params, im)
+function [uwcand] = TemplateMatching(da, params, im)
     %Load the Generated Templates
     object = load ('./week4/templates/mean_train.mat');
     T = object.templates;
