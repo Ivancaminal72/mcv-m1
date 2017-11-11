@@ -146,7 +146,7 @@ function vcomb = getCombinations(da, dims, ffs)
     
     if(dims > 0 && ffs > 0)
         %Obtain the division period
-        per_w = (da('all').w_max-da('all').w_min)/(ffs+1);
+        per_w = (da('all').w_max-da('all').w_min)/(dims+1);
         per_ff = (da('all').ff_max-da('all').ff_min)/(ffs+1);
         %Preallocate vcomb
         vcomb(1:(dims*ffs)) = struct('w', 0, 'h', 0);
@@ -155,7 +155,7 @@ function vcomb = getCombinations(da, dims, ffs)
         mf=zeros(dims*ffs,1); %multiplier of the period of the form_factor
         for d = 1:dims
             for f = 1:ffs
-                c = f+(d-1)*dims;
+                c = f+(d-1)*ffs;
                 md(c) = d;
                 mf(c) = f;
             end
