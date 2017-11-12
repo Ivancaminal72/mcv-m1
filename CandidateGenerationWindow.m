@@ -41,7 +41,10 @@ function [windowCandidates] = CandidateGenerationWindow(mask, window_method, da,
             params.threshold = 10; %Threshold that limits the result sumatory 
             [windowCandidates] = TemplateMatching(da, params, im);
         case 'hough'
-            [windowCandidates] = HoughMethod(da, im);
+            params.numpeaks = 100; %Number of lines of hough transform that we take into account
+            params.t = 9; %Tolerance for horizontal and vertical lines (degres)           
+            params.tt = 21; %Tolerance for tilted lines (degres)
+            [windowCandidates] = HoughMethod(da, params, im);
         otherwise
             error('Incorrect method');
     end

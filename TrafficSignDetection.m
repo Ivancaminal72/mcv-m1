@@ -73,28 +73,27 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
 
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
-
+        pixelCandidates = [];
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if(window_method ~= 'template_matching' && window_method ~= 'hough')
+        if(window_method ~= "template_matching" && window_method ~= "hough")
             pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
+            % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
+            pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
+            [localPixelTP, localPixelFP, localPixelFN, localPixelTN] = PerformanceAccumulationPixel(pixelCandidates, pixelAnnotation);
+            pixelTP = pixelTP + localPixelTP;
+            pixelFP = pixelFP + localPixelFP;
+            pixelFN = pixelFN + localPixelFN;
+            pixelTN = pixelTN + localPixelTN;
+
+            % display(pixelTP)
+            % display(pixelFP)
+            % display(pixelFN)
+            % display(pixelTN)        
         end
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         windowCandidates = CandidateGenerationWindow(pixelCandidates, window_method, datasetAnalysis, im); %%  (Needed after Week 3)
-        
-        % Accumulate pixel performance of the current image %%%%%%%%%%%%%%%%%
-        pixelAnnotation = imread(strcat(directory, '/mask/mask.', files(i).name(1:size(files(i).name,2)-3), 'png'))>0;
-        [localPixelTP, localPixelFP, localPixelFN, localPixelTN] = PerformanceAccumulationPixel(pixelCandidates, pixelAnnotation);
-        pixelTP = pixelTP + localPixelTP;
-        pixelFP = pixelFP + localPixelFP;
-        pixelFN = pixelFN + localPixelFN;
-        pixelTN = pixelTN + localPixelTN;
-
-        % display(pixelTP)
-        % display(pixelFP)
-        % display(pixelFN)
-        % display(pixelTN)
-        
+                
         % Accumulate object performance of the current image %%%%%%%%%%%%%%%%  (Needed after Week 3)
         windowAnnotations = LoadAnnotations(strcat(directory, '/gt/gt.', files(i).name(1:size(files(i).name,2)-3), 'txt'));
         [localWindowTP, localWindowFN, localWindowFP] = PerformanceAccumulationWindow(windowCandidates, windowAnnotations);

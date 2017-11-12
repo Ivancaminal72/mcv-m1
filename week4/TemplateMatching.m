@@ -2,9 +2,9 @@ function [uwcand] = TemplateMatching(da, params, im)
     %Load the Generated Templates
     object = load ('./week4/templates/mean_train.mat');
     T = object.templates;
-    %Compute edges of the image and the chamfer distance
-    
-    ime=findEdges_ycbcr(im);
+    %Compute edges of the image and the chamfer distance    
+    ime=findDistToEdges_ycbcr(im);
+    %ime=findDistToEdges_gray(im);
 
     wcand = [];
     uwcand = [];
@@ -142,7 +142,7 @@ function vcomb = getCombinations(da, dims, ffs)
 end
 
 
-function ime = findEdges_gray(im)
+function ime = findDistToEdges_gray(im)
     im_g = rgb2gray(im);
     [ime, th] = edge(im_g,'Canny', [0.0112    0.281]);
     ime = bwdist(ime);
@@ -150,7 +150,7 @@ function ime = findEdges_gray(im)
     %waitforbuttonpress();
 end
 
-function ime = findEdges_ycbcr(im)
+function ime = findDistToEdges_ycbcr(im)
     %imshow(im)
     %waitforbuttonpress();
     im_g = rgb2ycbcr(im);
