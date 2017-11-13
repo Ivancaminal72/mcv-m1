@@ -132,9 +132,7 @@ function wcand = findRectangularSignals(wcand, da, peaks)
                             pa = findIntersection(peaks.h(ib,:), peaks.v(ic,:));                            
                             pb = findIntersection(peaks.h(ia,:), peaks.v(ic,:));
                             if(pa(1) <= pb(1) || pa(1)>imgh || pa(2)>imgw || pb(1)>imgh || pb(2)>imgw)
-                                if(pa(1) > pb(1))
-                                    disp(pa);
-                                end
+                                %PROBLEM: Intersections out of img size?!!
                                 continue;                                
                                 else                                
                                 pc = findIntersection(peaks.h(ib,:), peaks.v(id,:));

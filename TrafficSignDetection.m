@@ -62,18 +62,22 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
     windowTP=0; windowFN=0; windowFP=0; % (Needed after Week 3)
     pixelTP=0; pixelFN=0; pixelFP=0; pixelTN=0;
     
-    datasetAnalysis = DatasetAnalysis('datasets/train');
+    pixelPrecision=0; pixelAccuracy=0; pixelRecall=0; pixelF1Score=0;
+    pixelTP=0; pixelFP=0; pixelFN=0; pixelCandidates = [];
+    
+    datasetAnalysis = DatasetAnalysis('datasets/trainingset');
     
     files = ListFiles(directory);
     
-    % for i=1:size(files,1)
-    for i=1:30
-
-        disp(sprintf('image%d',i));
-
+    for i=1:size(files,1)
+    %for i=1:30
+        tic;
+        
+        disp(sprintf('image%d',i));             
+        
         % Read file
         im = imread(strcat(directory,'/',files(i).name));
-        pixelCandidates = [];
+        
         % Candidate Generation (pixel) %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         if(window_method ~= "template_matching" && window_method ~= "hough")
             pixelCandidates = CandidateGenerationPixel_Color(im, pixel_method);
@@ -88,7 +92,12 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
             % display(pixelTP)
             % display(pixelFP)
             % display(pixelFN)
-            % display(pixelTN)        
+            % display(pixelTN)
+            % Plot performance evaluation
+            
+            [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
+            pixelF1Score = F1Score(pixelPrecision, pixelRecall);
+            
         end
         %SaveMask(pixelCandidates, results_directory, files(i).name(1:size(files(i).name,2)-3));
         % Candidate Generation (window)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,15 +108,11 @@ function TrafficSignDetection(directory, pixel_method, window_method, decision_m
         [localWindowTP, localWindowFN, localWindowFP] = PerformanceAccumulationWindow(windowCandidates, windowAnnotations);
         windowTP = windowTP + localWindowTP;
         windowFN = windowFN + localWindowFN;
-        windowFP = windowFP + localWindowFP;
-    end
-
-    % Plot performance evaluation
-    [pixelPrecision, pixelAccuracy, pixelSpecificity, pixelRecall] = PerformanceEvaluationPixel(pixelTP, pixelFP, pixelFN, pixelTN);
+        windowFP = windowFP + localWindowFP;        
+        toc;
+    end 
     
-    [windowPrecision, windowRecall, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)
-
-    pixelF1Score = F1Score(pixelPrecision, pixelRecall);
+    [windowPrecision, windowRecall, windowAccuracy] = PerformanceEvaluationWindow(windowTP, windowFN, windowFP); % (Needed after Week 3)   
     windowF1Score = F1Score(windowPrecision, windowRecall);
     
     disp('----------------- PIXEL ------------------');

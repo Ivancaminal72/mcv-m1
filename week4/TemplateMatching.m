@@ -64,7 +64,7 @@ function [uwcand] = TemplateMatching(da, params, im)
     elseif(length(wcand)==1)
         uwcand = struct('y', wcand(1).y, 'x', wcand(1).x, 'w', wcand(1).w, 'h', wcand(1).h);
     end
-    showCandidates(im, ime, uwcand, wcand);
+    %showCandidates(im, ime, uwcand, wcand);
 end
 
 function uwcand = getUnifiedWindowCandidates(wcand, dist)
